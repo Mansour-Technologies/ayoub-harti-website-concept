@@ -26,5 +26,7 @@ await shot('05-mobile-nav-open', 375, 812, false, (p) => p.click('[data-menu-ope
 await shot('06-desktop-contact', 1440, 900, false, to('contact'));
 await shot('07-mobile-contact', 375, 812, false, to('contact'));
 await shot('08-desktop-offre', 1440, 900, false, to('offre'));
-await shot('09-desktop-video', 1440, 900, false, to('video'));
+await shot('09-desktop-board', 1440, 900, false, to('sbora'));
+await shot('10-mobile-board', 375, 812, false, (p) => p.evaluate(() => document.querySelector('.sbora__board').scrollIntoView({ behavior: 'instant', block: 'center' })));
+await shot('11-mobile-video-playing', 375, 812, false, (p) => p.click('.hero button[data-embed-play]'));
 await b.close();

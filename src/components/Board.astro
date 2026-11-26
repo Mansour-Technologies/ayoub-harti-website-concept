@@ -5,10 +5,10 @@
  * top-right of every board). It reproduces none of his sheets; formulas are standard Bac physics.
  */
 const rows = [
-  { n: '①', f: 'N(t) = N₀ · e<sup>−λt</sup>', ar: 'قانون التناقص الإشعاعي', fr: 'Décroissance radioactive', c: 'orange' },
+  { n: '①', f: 'N(t) = N<sub>0</sub> · e<sup>−λt</sup>', ar: 'قانون التناقص الإشعاعي', fr: 'Décroissance radioactive', c: 'orange' },
   { n: '②', f: 't<sub>½</sub> = ln2 / λ', ar: 'عمر النصف', fr: 'Demi-vie', c: 'orange' },
   { n: '③', f: 'τ = R · C', ar: 'ثابتة الزمن', fr: 'Dipôle RC', c: 'teal' },
-  { n: '④', f: 'T₀ = 2π √(L·C)', ar: 'الدور الخاص', fr: 'Circuit LC', c: 'pink' },
+  { n: '④', f: 'T<sub>0</sub> = 2π √(L·C)', ar: 'الدور الخاص', fr: 'Circuit LC', c: 'pink' },
   { n: '⑤', f: 'v = λ / T', ar: 'سرعة الانتشار', fr: 'Ondes', c: 'yellow' },
 ];
 ---
@@ -27,8 +27,8 @@ const rows = [
       <path d="M24 22 30 12 36 22M298 172 308 178 298 184" stroke="#17171a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
       <path class="board__decay" d="M30 30 C 70 92, 110 128, 160 148 S 260 172, 300 175" stroke="#d21f3c" stroke-width="4" stroke-linecap="round"/>
       <path d="M30 104 H 92 V178" stroke="#1d4fd6" stroke-width="2" stroke-dasharray="6 6"/>
-      <text x="6" y="36" fill="#d21f3c" font-family="Caveat Variable, cursive" font-size="22" font-weight="700">N₀</text>
-      <text x="0" y="110" fill="#1d4fd6" font-family="Caveat Variable, cursive" font-size="20" font-weight="700">N₀/2</text>
+      <text x="6" y="36" fill="#d21f3c" font-family="Caveat Variable, cursive" font-size="22" font-weight="700">N<tspan font-size="14" dy="4">0</tspan></text>
+      <text x="0" y="110" fill="#1d4fd6" font-family="Caveat Variable, cursive" font-size="20" font-weight="700">N<tspan font-size="13" dy="4">0</tspan><tspan dy="-4">/2</tspan></text>
       <text x="80" y="198" fill="#1d4fd6" font-family="Caveat Variable, cursive" font-size="20" font-weight="700">t½</text>
       <text x="292" y="198" fill="#17171a" font-family="Caveat Variable, cursive" font-size="20" font-weight="700">t</text>
     </svg>
