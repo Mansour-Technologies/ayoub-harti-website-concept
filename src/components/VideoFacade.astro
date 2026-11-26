@@ -1,0 +1,19 @@
+---
+/**
+ * Click-to-load YouTube facade. Thumbnail from i.ytimg.com (official), player from youtube-nocookie.com.
+ * Nothing from YouTube's player loads until the visitor clicks. No autoplay before interaction.
+ */
+interface Props { id: string; title: string; label?: string; class?: string; eager?: boolean }
+const { id, title, label = 'Vidéo officielle · YouTube @ProfHarti', class: cls = '', eager = false } = Astro.props;
+---
+<div class={`yt ${cls}`} data-yt={id} data-yt-title={title}>
+  <button type="button" class="yt__btn" aria-label={`Lire la vidéo : ${title} (charge le lecteur YouTube)`}>
+    <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" width="480" height="360" loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager ? 'high' : 'auto'} />
+    <span class="yt__play" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+    <span class="yt__label mono">{label}</span>
+  </button>
+</div>
+<script>
+  import { initFacades } from '../scripts/youtube';
+  initFacades();
+</script>

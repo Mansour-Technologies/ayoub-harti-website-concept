@@ -1,0 +1,32 @@
+---
+import Glyph from './Glyph.astro';
+interface Props { num: string; kicker: string; title: string; ar?: string; glyph?: string }
+const { num, kicker, title, ar, glyph = 'parabola' } = Astro.props;
+---
+<section class="ph">
+  <div class="wrap ph__in">
+    <div class="ph__meta">
+      <span class="ph__num display" aria-hidden="true">{num}</span>
+      <Glyph kind={glyph} size={56} class="ph__glyph" />
+    </div>
+    <div class="ph__text">
+      <p class="kicker">{kicker}</p>
+      <h1 class="display ph__title" set:html={title} />
+      {ar && <p class="ar ph__ar" lang="ar" dir="rtl">{ar}</p>}
+      <div class="ph__lead"><slot /></div>
+    </div>
+  </div>
+</section>
+<style>
+  .ph { padding-block: clamp(2.5rem, 7vw, 6rem) clamp(2rem, 5vw, 4rem); border-bottom: 1px solid var(--line); position: relative; overflow: hidden; }
+  .ph::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 calc(100% / 12 - 1px), rgba(237,230,218,.035) calc(100% / 12 - 1px) calc(100% / 12)); pointer-events: none; }
+  .ph__in { display: grid; gap: 1.5rem; position: relative; }
+  @media (min-width: 900px) { .ph__in { grid-template-columns: minmax(180px, 0.32fr) 1fr; align-items: end; } }
+  .ph__meta { display: flex; align-items: flex-end; gap: 1rem; }
+  .ph__num { font-size: clamp(4.5rem, 14vw, 11rem); color: transparent; -webkit-text-stroke: 1.5px var(--signal); line-height: 0.78; }
+  :global(.ph__glyph) { color: var(--chalk-dim); margin-bottom: 0.4rem; }
+  .ph__title { font-size: var(--fs-h1); margin: 0.6rem 0 0.4rem; }
+  .ph__title :global(em) { font-style: normal; color: var(--signal); }
+  .ph__ar { color: var(--gold); font-size: 1.15rem; margin: 0 0 1rem; }
+  .ph__lead { max-width: 62ch; color: var(--chalk-dim); font-size: var(--fs-lead); line-height: 1.5; }
+</style>
