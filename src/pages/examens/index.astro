@@ -1,0 +1,306 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import { questions, themes, checklists, sampleExercise } from '../../data/quiz';
+import { withBase } from '../../lib/url';
+---
+<Base title="Préparation aux examens" description="Révision interactive style examen national (2ème Bac) : quiz par thème et difficulté, explications instantanées, check-lists et suivi de progression (démonstration)." current="examens/">
+  <PageHero num="04" kicker="Préparation aux examens · 2ème Bac" title="Le jour J, <em>déjà vécu.</em>" ar="الامتحان الوطني… بلا مفاجآت" glyph="nucleus">
+    <p>Choisis un thème et une difficulté, réponds, et lis l’explication immédiatement. Tes résultats et ta check-list restent sur cet appareil. <span class="demo-badge">Contenu de démonstration</span></p>
+  </PageHero>
+
+  <section class="section quiz" data-quiz>
+    <script type="application/json" id="q-data" set:html={JSON.stringify(questions)} />
+    <div class="wrap quiz__grid">
+      <div class="quiz__setup" data-setup>
+        <h2 class="quiz__h display">Composer ma série</h2>
+        <fieldset class="qset">
+          <legend class="kicker">Thèmes</legend>
+          <div class="qset__opts">
+            {themes.map((t) => (
+              <label class="check"><input type="checkbox" name="theme" value={t.id} checked /> <span>{t.label}</span> <span class="mono muted">{questions.filter((q) => q.theme === t.id).length}</span></label>
+            ))}
+          </div>
+        </fieldset>
+        <fieldset class="qset">
+          <legend class="kicker">Difficulté</legend>
+          <div class="seg" role="group" aria-label="Difficulté" data-diff>
+            <button type="button" aria-pressed="true" data-value="all">Toutes</button>
+            <button type="button" aria-pressed="false" data-value="facile">Facile</button>
+            <button type="button" aria-pressed="false" data-value="moyen">Moyen</button>
+            <button type="button" aria-pressed="false" data-value="difficile">Difficile</button>
+          </div>
+        </fieldset>
+        <p class="mono quiz__avail" data-avail aria-live="polite"></p>
+        <button type="button" class="btn" data-start>Commencer la série <span class="arr" aria-hidden="true">→</span></button>
+      </div>
+
+      <div class="quiz__run" data-run hidden>
+        <div class="run__top">
+          <p class="mono run__pos" data-pos></p>
+          <p class="mono run__score" data-score></p>
+        </div>
+        <div class="run__bar" aria-hidden="true"><i data-bar></i></div>
+        <form class="run__q" data-form>
+          <fieldset>
+            <legend class="run__legend" data-legend tabindex="-1"></legend>
+            <p class="run__tags mono" data-tags></p>
+            <div class="run__opts" data-opts></div>
+          </fieldset>
+          <div class="run__fb" data-fb aria-live="polite"></div>
+          <div class="run__btns">
+            <button type="submit" class="btn" data-check>Valider</button>
+            <button type="button" class="btn" data-next hidden>Question suivante →</button>
+            <button type="button" class="btn ghost small" data-reset>Recommencer</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="quiz__sum" data-sum hidden tabindex="-1">
+        <p class="kicker">Résumé de la session</p>
+        <p class="sum__score display" data-sum-score></p>
+        <p class="sum__msg" data-sum-msg></p>
+        <ul class="sum__themes" data-sum-themes></ul>
+        <div class="run__btns">
+          <button type="button" class="btn" data-reset>Nouvelle série</button>
+          <a class="btn ghost" href={withBase('espace-etudiant/')}>Voir ma progression</a>
+        </div>
+      </div>
+
+      <aside class="quiz__hist" aria-labelledby="hist-h">
+        <h2 id="hist-h" class="kicker">Mes dernières séries</h2>
+        <ol data-results></ol>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section paper">
+    <div class="wrap">
+      <header class="sec-head">
+        <span class="sec-num">Check-lists de révision</span>
+        <h2>Ce que je dois savoir faire.</h2>
+        <p class="muted">Coche ce qui est maîtrisé. La progression par thème est enregistrée sur cet appareil.</p>
+      </header>
+      <div class="cl" data-checklists>
+        {checklists.map((c) => (
+          <section class="cl__col" aria-labelledby={`cl-${c.theme}`}>
+            <div class="cl__head">
+              <h3 id={`cl-${c.theme}`}>{themes.find((t) => t.id === c.theme)!.label}</h3>
+              <span class="mono cl__pct" data-cl-pct={c.theme}>0 / {c.items.length}</span>
+            </div>
+            <ul>
+              {c.items.map((it, i) => (
+                <li><label><input type="checkbox" data-cl={`${c.theme}:${i}`} /> <span>{it}</span></label></li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap ex">
+      <header class="sec-head">
+        <span class="sec-num">Sujet type</span>
+        <h2>{sampleExercise.title}</h2>
+        <p class="muted">Exercice original de démonstration, rédigé dans l’esprit de l’examen national. Cherche d’abord, puis affiche la correction question par question.</p>
+      </header>
+      <p class="ex__ctx">{sampleExercise.context}</p>
+      <ol class="ex__list">
+        {sampleExercise.parts.map((p, i) => (
+          <li>
+            <p class="ex__q">{p.q}</p>
+            <button type="button" class="btn ghost small" aria-expanded="false" aria-controls={`ex-a-${i}`} data-reveal-answer>Afficher la correction</button>
+            <div class="ex__a mono" id={`ex-a-${i}`} hidden>{p.a}</div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .quiz__grid { display: grid; gap: 2.5rem; }
+  @media (min-width: 1000px) { .quiz__grid { grid-template-columns: 1fr 18rem; } .quiz__hist { grid-column: 2; grid-row: 1 / span 3; } }
+  .quiz__h { font-size: var(--fs-h2); margin-bottom: 1.5rem; }
+  .qset { border: 0; padding: 0; margin: 0 0 1.5rem; }
+  .qset legend { margin-bottom: 0.6rem; padding: 0; }
+  .qset__opts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .check { display: inline-flex; align-items: center; gap: 0.55rem; min-height: 48px; padding: 0.5rem 0.9rem; border: 1px solid var(--line-strong); cursor: pointer; font-weight: 650; }
+  .check:has(input:checked) { border-color: var(--signal); background: rgba(247, 197, 30, 0.08); }
+  .check input { accent-color: var(--signal); width: 1.05rem; height: 1.05rem; }
+  .quiz__avail { color: var(--chalk-dim); font-size: 0.8rem; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+  .run__top { display: flex; justify-content: space-between; gap: 1rem; }
+  .run__pos, .run__score { font-size: 0.8rem; color: var(--chalk-dim); margin: 0 0 0.5rem; letter-spacing: 0.06em; }
+  .run__score { color: var(--signal); }
+  .run__bar { height: 4px; background: var(--ink-3); position: relative; margin-bottom: 2rem; }
+  .run__bar i { position: absolute; inset: 0 auto 0 0; background: var(--signal); transition: width 0.4s var(--ease); }
+  .run__q fieldset { border: 0; padding: 0; margin: 0; }
+  .run__legend { font-size: clamp(1.2rem, 2.2vw, 1.6rem); font-weight: 700; line-height: 1.35; padding: 0; margin-bottom: 0.6rem; outline: none; }
+  .run__tags { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--chalk-dim); margin: 0 0 1.2rem; }
+  .run__opts { display: grid; gap: 0.6rem; }
+  :global(.opt) { display: flex; gap: 0.8rem; align-items: center; min-height: 56px; padding: 0.65rem 1rem; border: 1px solid var(--line-strong); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+  :global(.opt:hover) { border-color: var(--signal); }
+  :global(.opt input) { accent-color: var(--signal); width: 1.1rem; height: 1.1rem; flex: none; }
+  :global(.opt .l) { font-family: var(--f-mono); color: var(--signal); font-weight: 700; }
+  :global(.opt.right) { border-color: var(--ok); background: rgba(124, 207, 138, 0.1); }
+  :global(.opt.wrong) { border-color: var(--bad); background: rgba(255, 138, 122, 0.08); }
+  .run__fb { margin: 1.25rem 0; min-height: 1.5rem; }
+  :global(.fb__t) { font-weight: 800; margin: 0 0 0.3rem; }
+  :global(.fb__t.ok) { color: var(--ok); } :global(.fb__t.ko) { color: var(--bad); }
+  :global(.fb__w) { font-family: var(--f-mono); font-size: 0.92rem; color: var(--chalk); margin: 0; padding: 0.8rem 1rem; background: var(--ink-2); border-inline-start: 3px solid var(--signal); }
+  .run__btns { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+  .quiz__sum { outline: none; border: 1px solid var(--line-strong); padding: clamp(1.5rem, 4vw, 2.5rem); background: var(--ink-2); }
+  .sum__score { font-size: clamp(4rem, 12vw, 8rem); color: var(--signal); margin: 0.3rem 0; }
+  .sum__msg { font-size: var(--fs-lead); }
+  .sum__themes { list-style: none; padding: 0; margin: 1rem 0 1.75rem; display: grid; gap: 0.4rem; }
+  :global(.sum__themes li) { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--line); }
+  .quiz__hist ol { list-style: none; padding: 0; margin: 0.8rem 0 0; }
+  :global(.quiz__hist li) { display: flex; justify-content: space-between; gap: 1rem; padding: 0.55rem 0; border-bottom: 1px solid var(--line); font-size: 0.92rem; color: var(--chalk-dim); }
+  :global(.quiz__hist b) { color: var(--chalk); font-family: var(--f-mono); }
+
+  .cl { display: grid; gap: 1.5rem 2.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+  .cl__head { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--paper-ink); padding-bottom: 0.5rem; }
+  .cl__head h3 { font-size: 1.4rem; font-stretch: 78%; text-transform: uppercase; }
+  .cl__pct { font-size: 0.78rem; color: var(--bordeaux); font-weight: 700; }
+  .cl ul { list-style: none; padding: 0; margin: 0; }
+  .cl label { display: flex; gap: 0.7rem; align-items: flex-start; padding: 0.65rem 0; border-bottom: 1px solid rgba(26, 20, 18, 0.15); cursor: pointer; min-height: 44px; }
+  .cl input { accent-color: var(--bordeaux); width: 1.1rem; height: 1.1rem; margin-top: 0.2rem; flex: none; }
+  .cl label:has(input:checked) span { text-decoration: line-through; text-decoration-color: var(--bordeaux); color: var(--paper-muted); }
+
+  .ex__ctx { font-size: var(--fs-lead); max-width: 70ch; padding: 1.25rem 1.5rem; border-inline-start: 4px solid var(--signal); background: var(--ink-2); }
+  .ex__list { padding-inline-start: 0; list-style: none; display: grid; gap: 0; margin: 2rem 0 0; }
+  .ex__list li { padding: 1.2rem 0; border-bottom: 1px solid var(--line); }
+  .ex__q { font-weight: 650; margin-bottom: 0.75rem; }
+  .ex__a { margin-top: 0.9rem; padding: 0.9rem 1rem; background: var(--ink-2); border-inline-start: 3px solid var(--ok); font-size: 0.92rem; line-height: 1.6; }
+</style>
+
+<script>
+  import { read, write, announce } from '../../lib/store';
+  type Q = { id: string; theme: string; difficulty: string; q: string; options: string[]; answer: number; why: string };
+  const all: Q[] = JSON.parse(document.getElementById('q-data')!.textContent || '[]');
+  const themeLabel: Record<string, string> = { ondes: 'Ondes', nucleaire: 'Nucléaire', electricite: 'Électricité', mecanique: 'Mécanique', chimie: 'Chimie' };
+  const root = document.querySelector<HTMLElement>('[data-quiz]')!;
+  const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const setup = $('[data-setup]'), run = $('[data-run]'), sum = $('[data-sum]');
+  const startBtn = $<HTMLButtonElement>('[data-start]');
+  let diff = 'all';
+  let series: Q[] = [];
+  let idx = 0, score = 0, answered = false;
+  let perTheme: Record<string, { ok: number; n: number }> = {};
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+  function pool() {
+    const th = Array.from(root.querySelectorAll<HTMLInputElement>('input[name="theme"]:checked')).map((i) => i.value);
+    return all.filter((q) => th.includes(q.theme) && (diff === 'all' || q.difficulty === diff));
+  }
+  function updateAvail() {
+    const n = pool().length;
+    $('[data-avail]').textContent = n ? `${n} question${n > 1 ? 's' : ''} disponible${n > 1 ? 's' : ''} — série de ${Math.min(n, 8)}` : 'Aucune question pour cette sélection.';
+    startBtn.disabled = n === 0;
+  }
+  root.querySelectorAll('input[name="theme"]').forEach((i) => i.addEventListener('change', updateAvail));
+  $('[data-diff]').addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('button'); if (!b) return;
+    diff = b.dataset.value!;
+    $('[data-diff]').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    updateAvail();
+  });
+
+  function start() {
+    // Deterministic order: by theme then difficulty, capped at 8 — predictable for students and tests.
+    const order = { facile: 0, moyen: 1, difficile: 2 } as Record<string, number>;
+    series = pool().sort((a, b) => order[a.difficulty] - order[b.difficulty]).slice(0, 8);
+    if (!series.length) return;
+    idx = 0; score = 0; perTheme = {};
+    setup.hidden = true; sum.hidden = true; run.hidden = false;
+    show();
+  }
+  function show() {
+    const q = series[idx];
+    answered = false;
+    $('[data-pos]').textContent = `Question ${idx + 1} / ${series.length}`;
+    $('[data-score]').textContent = `Score : ${score}`;
+    ($('[data-bar]') as HTMLElement).style.width = `${(idx / series.length) * 100}%`;
+    $('[data-legend]').textContent = q.q;
+    $('[data-tags]').textContent = `${themeLabel[q.theme]} · ${q.difficulty}`;
+    $('[data-opts]').innerHTML = q.options.map((o, i) => `<label class="opt"><input type="radio" name="opt" value="${i}"> <span class="l">${String.fromCharCode(65 + i)}</span> <span>${esc(o)}</span></label>`).join('');
+    $('[data-fb]').innerHTML = '';
+    $('[data-check]').hidden = false; $('[data-next]').hidden = true;
+    $('[data-legend]').focus();
+  }
+  $('[data-form]').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (answered) return;
+    const sel = root.querySelector<HTMLInputElement>('input[name="opt"]:checked');
+    if (!sel) { $('[data-fb]').innerHTML = '<p class="fb__t ko">Choisis une réponse avant de valider.</p>'; return; }
+    answered = true;
+    const q = series[idx];
+    const v = Number(sel.value), ok = v === q.answer;
+    if (ok) score++;
+    perTheme[q.theme] ??= { ok: 0, n: 0 };
+    perTheme[q.theme].n++; if (ok) perTheme[q.theme].ok++;
+    root.querySelectorAll<HTMLElement>('.opt').forEach((l, i) => { l.classList.toggle('right', i === q.answer); l.classList.toggle('wrong', i === v && !ok); l.querySelector('input')!.disabled = true; });
+    $('[data-fb]').innerHTML = `<p class="fb__t ${ok ? 'ok' : 'ko'}">${ok ? 'Bonne réponse ✓' : `Réponse attendue : ${String.fromCharCode(65 + q.answer)}`}</p><p class="fb__w">${esc(q.why)}</p>`;
+    $('[data-score]').textContent = `Score : ${score}`;
+    $('[data-check]').hidden = true;
+    const nx = $<HTMLButtonElement>('[data-next]');
+    nx.hidden = false; nx.textContent = idx + 1 < series.length ? 'Question suivante →' : 'Voir le résumé →';
+    nx.focus();
+  });
+  $('[data-next]').addEventListener('click', () => { idx++; if (idx < series.length) show(); else finish(); });
+
+  function finish() {
+    run.hidden = true; sum.hidden = false;
+    const total = series.length;
+    $('[data-sum-score]').textContent = `${score}/${total}`;
+    const pct = score / total;
+    $('[data-sum-msg]').textContent = pct === 1 ? 'Parfait. Passe au niveau de difficulté supérieur.' : pct >= 0.6 ? 'Solide. Relis les explications des questions manquées.' : 'Reprends les chapitres concernés puis refais une série.';
+    $('[data-sum-themes]').innerHTML = Object.entries(perTheme).map(([t, r]) => `<li><span>${themeLabel[t]}</span><b class="mono">${r.ok}/${r.n}</b></li>`).join('');
+    const themesUsed = Object.keys(perTheme);
+    const res = read('quiz');
+    res.push({ at: Date.now(), theme: themesUsed.length === 1 ? themesUsed[0] : 'mix', score, total });
+    write('quiz', res);
+    paintResults();
+    sum.focus();
+    announce(`Série terminée : ${score} sur ${total}.`);
+  }
+  function reset() {
+    run.hidden = true; sum.hidden = true; setup.hidden = false; series = []; idx = 0; score = 0;
+    startBtn.focus();
+  }
+  root.querySelectorAll('[data-reset]').forEach((b) => b.addEventListener('click', reset));
+  startBtn.addEventListener('click', start);
+
+  function paintResults() {
+    const res = read('quiz').slice(-6).reverse();
+    $('[data-results]').innerHTML = res.length
+      ? res.map((r) => `<li><span>${r.theme === 'mix' ? 'Série mixte' : themeLabel[r.theme] ?? r.theme} · ${new Date(r.at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}</span><b>${r.score}/${r.total}</b></li>`).join('')
+      : '<li>Aucune série terminée pour l’instant.</li>';
+  }
+
+  // Checklists
+  const cl = document.querySelector<HTMLElement>('[data-checklists]')!;
+  function paintCl() {
+    const st = read('checklist');
+    cl.querySelectorAll<HTMLInputElement>('[data-cl]').forEach((i) => (i.checked = !!st[i.dataset.cl!]));
+    cl.querySelectorAll<HTMLElement>('[data-cl-pct]').forEach((p) => {
+      const t = p.dataset.clPct!; const boxes = cl.querySelectorAll<HTMLInputElement>(`[data-cl^="${t}:"]`);
+      p.textContent = `${Array.from(boxes).filter((b) => b.checked).length} / ${boxes.length}`;
+    });
+  }
+  cl.addEventListener('change', (e) => {
+    const i = e.target as HTMLInputElement; if (!i.dataset.cl) return;
+    const st = read('checklist'); st[i.dataset.cl] = i.checked; write('checklist', st); paintCl();
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-reveal-answer]').forEach((b) => b.addEventListener('click', () => {
+    const a = document.getElementById(b.getAttribute('aria-controls')!)!;
+    const open = a.hidden; a.hidden = !open; b.setAttribute('aria-expanded', String(open));
+    b.textContent = open ? 'Masquer la correction' : 'Afficher la correction';
+  }));
+
+  updateAvail(); paintResults(); paintCl();
+</script>

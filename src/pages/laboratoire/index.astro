@@ -1,0 +1,129 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import { withBase } from '../../lib/url';
+---
+<Base title="Laboratoire interactif — Projectile" description="Simulation interactive du mouvement d’un projectile : vitesse initiale, angle, gravité Terre/Lune, vecteur vitesse en temps réel, temps de vol, hauteur maximale et portée." current="laboratoire/">
+  <PageHero num="05" kicker="Laboratoire interactif · Mécanique · 2ème Bac" title="Le projectile, <em>en direct.</em>" ar="حركة قذيفة في مجال الثقالة المنتظم" glyph="parabola">
+    <p>Règle la vitesse initiale, l’angle de tir et la gravité. Lance, mets en pause, observe les composantes du vecteur vitesse : vₓ reste constante, v_y diminue, s’annule au sommet, puis change de signe.</p>
+  </PageHero>
+
+  <section class="section lab" data-lab>
+    <div class="wrap lab__grid">
+      <div class="lab__canvas-wrap">
+        <canvas class="lab__canvas" data-canvas role="img" aria-label="Simulation de la trajectoire du projectile"></canvas>
+        <div class="lab__hud mono" aria-hidden="true">
+          <span>t = <b data-hud-t>0,00</b> s</span>
+          <span>x = <b data-hud-x>0,00</b> m</span>
+          <span>y = <b data-hud-y>0,00</b> m</span>
+        </div>
+        <div class="lab__transport">
+          <button type="button" class="btn" data-play aria-pressed="false"><span data-play-label>▶ Lancer</span></button>
+          <button type="button" class="btn ghost" data-reset>↺ Réinitialiser</button>
+          <label class="lab__toggle"><input type="checkbox" data-vectors checked /> Vecteurs vitesse</label>
+          <label class="lab__toggle"><input type="checkbox" data-ghost checked /> Garder la trace précédente</label>
+        </div>
+      </div>
+
+      <div class="lab__panel">
+        <fieldset class="lab__set">
+          <legend class="kicker">Paramètres</legend>
+          <div class="ctl">
+            <div class="ctl__top"><label for="v0">Vitesse initiale v₀</label><output for="v0" class="mono" data-out-v0>20 m/s</output></div>
+            <input type="range" id="v0" min="5" max="40" step="1" value="20" data-v0 />
+          </div>
+          <div class="ctl">
+            <div class="ctl__top"><label for="ang">Angle de tir α</label><output for="ang" class="mono" data-out-ang>45°</output></div>
+            <input type="range" id="ang" min="5" max="85" step="1" value="45" data-ang />
+          </div>
+          <div class="ctl">
+            <span class="ctl__lbl" id="g-lbl">Intensité de la pesanteur g</span>
+            <div class="seg" role="group" aria-labelledby="g-lbl" data-g>
+              <button type="button" aria-pressed="true" data-value="9.81">Terre · 9,81</button>
+              <button type="button" aria-pressed="false" data-value="1.62">Lune · 1,62</button>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="res" aria-live="polite">
+          <div class="res__item"><span class="res__k">Temps de vol</span><span class="res__f mono">T = 2v₀ sin α / g</span><span class="res__v display" data-res-T>—</span></div>
+          <div class="res__item"><span class="res__k">Hauteur maximale</span><span class="res__f mono">H = v₀² sin²α / (2g)</span><span class="res__v display" data-res-H>—</span></div>
+          <div class="res__item"><span class="res__k">Portée</span><span class="res__f mono">R = v₀² sin 2α / g</span><span class="res__v display" data-res-R>—</span></div>
+        </div>
+
+        <dl class="vel mono">
+          <div><dt>vₓ = v₀ cos α</dt><dd data-vx>—</dd></div>
+          <div><dt>v_y = v₀ sin α − g·t</dt><dd data-vy>—</dd></div>
+          <div><dt>‖v‖</dt><dd data-v>—</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="wrap lab__notes">
+      <div>
+        <h2 class="kicker">Hypothèses du modèle</h2>
+        <ul>
+          <li>Frottements de l’air négligés : seul le poids agit.</li>
+          <li>Point de lancement et point de chute à la même altitude.</li>
+          <li>Champ de pesanteur uniforme ; référentiel terrestre supposé galiléen.</li>
+          <li>Le projectile est assimilé à un point matériel.</li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="kicker">À tester</h2>
+        <ul>
+          <li>Compare 30° et 60° à même v₀ : même portée, hauteurs différentes.</li>
+          <li>Double v₀ : la portée est multipliée par 4.</li>
+          <li>Passe sur la Lune : g est environ 6 fois plus faible, la portée environ 6 fois plus grande.</li>
+        </ul>
+        <p><a class="link-arrow" href={withBase('videotheque/?v=v-projectile')}>Revoir la leçon « équation de la trajectoire » →</a></p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lab__grid { display: grid; gap: 2rem; }
+  @media (min-width: 1060px) { .lab__grid { grid-template-columns: 1.55fr 1fr; align-items: start; } }
+  .lab__canvas-wrap { position: relative; border: 1px solid var(--line-strong); background: #120e0c; }
+  .lab__canvas { width: 100%; aspect-ratio: 16 / 10; touch-action: none; cursor: crosshair; }
+  @media (max-width: 600px) { .lab__canvas { aspect-ratio: 4 / 3; } }
+  .lab__hud { position: absolute; top: 0.6rem; right: 0.75rem; display: flex; gap: 0.9rem; font-size: 0.72rem; color: var(--chalk-dim); pointer-events: none; }
+  .lab__hud b { color: var(--chalk); font-weight: 600; }
+  @media (max-width: 480px) { .lab__hud { gap: 0.5rem; font-size: 0.64rem; } }
+  .lab__transport { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: center; padding: 0.9rem; border-top: 1px solid var(--line); }
+  .lab__toggle { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; min-height: 44px; cursor: pointer; color: var(--chalk-dim); }
+  .lab__toggle input { accent-color: var(--signal); width: 1.1rem; height: 1.1rem; }
+  .lab__set { border: 0; padding: 0; margin: 0 0 1.5rem; display: grid; gap: 1.3rem; }
+  .lab__set legend { padding: 0; margin-bottom: 0.4rem; }
+  .ctl { display: grid; gap: 0.45rem; }
+  .ctl__top { display: flex; justify-content: space-between; align-items: baseline; }
+  .ctl label, .ctl__lbl { font-weight: 650; }
+  .ctl output { color: var(--signal); font-size: 1.05rem; font-weight: 700; }
+  input[type='range'] { -webkit-appearance: none; appearance: none; width: 100%; height: 44px; background: transparent; cursor: pointer; }
+  input[type='range']::-webkit-slider-runnable-track { height: 4px; background: linear-gradient(90deg, var(--signal) var(--p, 50%), var(--ink-3) var(--p, 50%)); }
+  input[type='range']::-moz-range-track { height: 4px; background: var(--ink-3); }
+  input[type='range']::-moz-range-progress { height: 4px; background: var(--signal); }
+  input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; margin-top: -12px; border-radius: 50%; background: var(--chalk); border: 4px solid var(--signal); }
+  input[type='range']::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--chalk); border: 4px solid var(--signal); }
+  .res { border-top: 2px solid var(--chalk); }
+  .res__item { display: grid; grid-template-columns: 1fr auto; grid-template-areas: 'k v' 'f v'; padding: 0.85rem 0; border-bottom: 1px solid var(--line); gap: 0.1rem 1rem; align-items: center; }
+  .res__k { grid-area: k; font-weight: 700; }
+  .res__f { grid-area: f; font-size: 0.78rem; color: var(--chalk-dim); }
+  .res__v { grid-area: v; font-size: clamp(1.8rem, 3.5vw, 2.6rem); color: var(--signal); text-transform: none; }
+  .vel { margin: 1.25rem 0 0; display: grid; gap: 0.35rem; font-size: 0.85rem; }
+  .vel div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.45rem 0.7rem; background: var(--ink-2); }
+  .vel dt { color: var(--chalk-dim); }
+  .vel dd { margin: 0; font-weight: 700; }
+  .vel div:nth-child(1) dd { color: #7fc8ff; }
+  .vel div:nth-child(2) dd { color: #ff9a8a; }
+  .lab__notes { display: grid; gap: 2rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--line-strong); }
+  @media (min-width: 900px) { .lab__notes { grid-template-columns: 1fr 1fr; } }
+  .lab__notes ul { padding-inline-start: 1.1rem; color: var(--chalk-dim); margin: 0.8rem 0 1rem; }
+  .lab__notes li { margin-bottom: 0.35rem; }
+</style>
+
+<script>
+  import { initLab } from '../../scripts/lab';
+  initLab(document.querySelector('[data-lab]')!);
+</script>
