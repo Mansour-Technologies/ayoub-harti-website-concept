@@ -1,18 +1,27 @@
-# Prof Harti — concept de site (démonstration non officielle)
+# Prof Harti — site vitrine (concept, démonstration non officielle)
 
 > **Concept de site internet proposé par Mansour Technologies — Démonstration non officielle.**
-> Ce dépôt n’est ni édité, ni validé, ni commandé par Prof Ayoub Harti. Il ne constitue pas son site officiel.
+> Ce dépôt n’est ni édité, ni validé, ni commandé par Prof Ayoub Harti. Ce n’est pas son site officiel.
 
 Live: https://mansour-technologies.github.io/ayoub-harti-website-concept/
 
 ## Overview
-An unsolicited website concept for a Moroccan physics-chemistry teacher and educational creator: course map by level,
-video library organised by chapter, interactive BAC revision, a projectile-motion lab and a local-only student dashboard.
+A premium single-page showcase ("site vitrine") for a Moroccan physics-chemistry teacher and educational creator:
+- personal hero
+- art-directed portrait slot
+- teaching approach, built on his own published phrases
+- subjects and levels (1ère année collège → 2ème Bac)
+- the « عرض التفوق » programme as publicly announced, with no prices
+- the official video in a click-to-load player
+- curated official channels
+- « Comment s’inscrire »
+- large contact buttons
+
+There are no app features, no accounts and no browser storage.
 
 ## Stack
-- Astro (static output) + TypeScript, vanilla TS islands, CSS custom properties
-- Self-hosted fonts via Fontsource: Archivo (variable, width axis), Noto Kufi Arabic, JetBrains Mono
-- Canvas 2D for the simulation
+- Astro (static output) + TypeScript; small vanilla scripts for the menu dialog, scroll-spy, reveal and video facade
+- Self-hosted fonts via Fontsource (SIL OFL): Archivo (variable, width axis), Noto Kufi Arabic, JetBrains Mono
 - Playwright end-to-end tests
 - GitHub Actions → GitHub Pages
 
@@ -22,34 +31,33 @@ npm ci
 npm run dev        # http://localhost:4321/ayoub-harti-website-concept/
 npm run build      # astro check + static build into dist/
 npm run preview
-npx playwright test                    # against local preview
-BASE_URL=https://mansour-technologies.github.io/ayoub-harti-website-concept/ npx playwright test   # against production
+npx playwright test                                                                                # local preview
+BASE_URL=https://mansour-technologies.github.io/ayoub-harti-website-concept/ npx playwright test  # production
 ```
 If the Playwright browser revision is not installed, set `PW_CHROME` to a local Chromium executable.
 
-## Deploy
-Push to `main`: `.github/workflows/deploy.yml` builds and publishes `dist/` to GitHub Pages (`base: /ayoub-harti-website-concept`).
+## Configuration
+All identity data, links, levels, the programme and the video ID live in `src/data/site.ts`.
 
-## Features
-- **Cours**: 33 chapters (3ème AC → 2ème Bac), filters by level/domain, accent-insensitive search, deep links `?niveau=`, “studied” tracking.
-- **Vidéothèque**: one official public video from the teacher’s YouTube channel (click-to-load `youtube-nocookie.com` facade, no autoplay before click); lesson slots with original revision sheets, search, level filter, bookmarks, progress, continue-watching, history, related lessons, `?v=` deep links.
-- **Préparation aux examens**: 18 original exam-style questions (5 themes × 3 difficulties), instant explanations, session summary, saved results, revision checklists, a multi-part sample exercise.
-- **Laboratoire**: projectile motion with v₀, angle, g (Earth/Moon), live velocity components, T, H, R, play/pause/reset, drag-to-aim, previous-trajectory ghost.
-- **Espace étudiant (démo)**: overview, course and revision progress, quiz results, bookmarks, weekly goals, recommended next lesson, reset. localStorage only, validated on read.
-- **Contact**: verified official channels + a demo form that sends nothing.
-- `noindex, nofollow` on every page, `robots.txt` disallows all, visible demo notice on every page.
+**WhatsApp number to be inserted on the teacher's approval.** Set `contact.whatsapp` in `src/data/site.ts` (international digits, for example `'2126XXXXXXXX'`). While it is `null`, no WhatsApp button is rendered and the Instagram DM button (`https://ig.me/m/prof_harti`) is the primary contact.
+
+## Deploy
+Push to `main`. `.github/workflows/deploy.yml` builds and publishes `dist/` to GitHub Pages (`base: /ayoub-harti-website-concept`).
+
+## Sources (consulted 2026-11-26)
+- YouTube @ProfHarti (UCblvxsFoS21ZOJjCAID68UA): description, levels, links, programme video `bQRpHAGhIXw`
+- Instagram @prof_harti (verified account): name, bio
+- Facebook Prof.harti, linked from the YouTube channel
 
 ## Assets & licensing
-- All illustrations, glyphs, the portrait placeholder and the Open Graph image are original work made for this concept.
-- Fonts: SIL Open Font License (via Fontsource).
-- YouTube: official public video embedded through YouTube’s own player (thumbnail served by `i.ytimg.com`). Nothing is rehosted.
-- No photo of the teacher is stored in this repository. The portrait slot is to be replaced with an authorised portrait on approval.
-- Educational content (summaries, questions, exercise) is original demonstration material, to be replaced by the teacher’s own.
+- Illustrations, glyphs, the portrait placeholder and the Open Graph image are original work made for this concept.
+- The official video is embedded through YouTube’s own player via `youtube-nocookie.com`, only after a click. The thumbnail is served by `i.ytimg.com`. Nothing is rehosted.
+- No photograph of the teacher is stored in this repository. The portrait slot (« Photo officielle — à fournir · sur validation ») is to be replaced with an authorised photo.
 
 ## Known limitations
-- Only one public, playable video exists on the official channel at the time of writing; other lessons are labelled placeholders.
-- No backend: progress lives in the visitor’s browser only; the contact form is a non-sending demo.
-- Arabic is used for accents and titles; the interface is in French.
+- Prices, dates and the WhatsApp number are intentionally absent.
+- The official YouTube channel currently exposes one playable public video.
+- The interface is in French, with Arabic accents.
 
 ## Rights
 All rights reserved — Mansour Technologies. No open-source licence is granted.

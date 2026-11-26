@@ -6,13 +6,14 @@ import { withBase } from '../lib/url';
 interface Props {
   title: string;
   description: string;
-  current?: string; // nav href key
+  home?: boolean;
 }
-const { title, description, current = '' } = Astro.props;
-const fullTitle = current === '' ? `Prof Harti — Physique-Chimie | Concept de site` : `${title} — Prof Harti | Concept de site`;
+const { title, description, home = true } = Astro.props;
+const fullTitle = home ? `Prof Harti — Physique-Chimie | Concept de site` : `${title} — Prof Harti | Concept de site`;
+// On the home page anchors are local; elsewhere they point back to the home page sections.
+const anchor = (h: string) => (home ? h : withBase('') + h);
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const ogImage = new URL(withBase('og.png'), Astro.site).toString();
-const isCurrent = (href: string) => href === current;
 ---
 <!doctype html>
 <html lang="fr" class="no-js">
@@ -57,11 +58,12 @@ const isCurrent = (href: string) => href === current;
         </a>
         <nav class="hdr__nav" aria-label="Navigation principale">
           <ul>
-            {nav.slice(1).map((n) => (
-              <li><a href={withBase(n.href)} aria-current={isCurrent(n.href) ? 'page' : undefined}>{n.short ?? n.label}</a></li>
+            {nav.map((n) => (
+              <li><a href={anchor(n.href)} class={'ar' in n ? 'ar' : undefined} lang={'ar' in n ? 'ar' : undefined}>{n.label}</a></li>
             ))}
           </ul>
         </nav>
+        <a class="hdr__cta" href="https://ig.me/m/prof_harti" target="_blank" rel="noopener noreferrer">Écrire au prof<span class="sr-only"> sur Instagram (nouvel onglet)</span></a>
         <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" data-menu-open>
           <span class="menu-btn__label">Menu</span>
           <span class="menu-btn__bars" aria-hidden="true"><i></i><i></i></span>
@@ -71,16 +73,16 @@ const isCurrent = (href: string) => href === current;
 
     <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu du site" hidden data-menu>
       <div class="menu__top wrap">
-        <span class="kicker">Index — {nav.length} chapitres</span>
+        <span class="kicker">Prof Harti — {nav.length} sections</span>
         <button class="menu__close" type="button" data-menu-close aria-label="Fermer le menu">Fermer <span aria-hidden="true">✕</span></button>
       </div>
       <nav class="wrap" aria-label="Menu complet">
         <ol class="menu__list">
           {nav.map((n) => (
             <li>
-              <a href={withBase(n.href)} aria-current={isCurrent(n.href) ? 'page' : undefined}>
+              <a href={anchor(n.href)} data-menu-link>
                 <span class="menu__num mono">{n.num}</span>
-                <span class="menu__label">{n.label}</span>
+                <span class={'ar' in n ? 'menu__label ar' : 'menu__label'} lang={'ar' in n ? 'ar' : undefined}>{n.label}</span>
               </a>
             </li>
           ))}
@@ -105,12 +107,12 @@ const isCurrent = (href: string) => href === current;
         <div class="ftr__brand">
           <p class="display ftr__word">Prof <span class="hl">Harti</span></p>
           <p class="ar ftr__ar" lang="ar" dir="rtl">{identity.subjectAr} — {identity.nameAr}</p>
-          <p class="muted ftr__small">Ce site est une <strong>proposition de concept</strong>. Il n’est ni édité, ni validé, ni commandé par {identity.name}. Les contenus pédagogiques interactifs sont des démonstrations originales.</p>
+          <p class="muted ftr__small">Ce site est une <strong>proposition de concept</strong>. Il n’est ni édité, ni validé, ni commandé par {identity.name}. Les informations affichées proviennent de ses canaux officiels publics.</p>
         </div>
         <nav aria-label="Pied de page" class="ftr__nav">
-          <span class="kicker">Pages</span>
+          <span class="kicker">Sections</span>
           <ul>
-            {nav.map((n) => <li><a href={withBase(n.href)}>{n.label}</a></li>)}
+            {nav.map((n) => <li><a href={anchor(n.href)} class={'ar' in n ? 'ar' : undefined} lang={'ar' in n ? 'ar' : undefined}>{n.label}</a></li>)}
           </ul>
         </nav>
         <div class="ftr__nav">
@@ -144,8 +146,17 @@ const isCurrent = (href: string) => href === current;
   .brand__word b { font-weight: 900; color: var(--signal); font-style: italic; }
   .hdr__nav ul { display: flex; gap: clamp(0.6rem, 1.6vw, 1.6rem); list-style: none; margin: 0; padding: 0; }
   .hdr__nav a { text-decoration: none; font-size: 0.9rem; font-weight: 560; font-stretch: 88%; color: var(--chalk-dim); padding: 0.5rem 0; position: relative; }
-  .hdr__nav a:hover, .hdr__nav a[aria-current='page'] { color: var(--chalk); }
-  .hdr__nav a[aria-current='page']::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--signal); }
+  .hdr__nav a.ar { font-size: 0.95rem; font-weight: 600; }
+  .hdr__nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--signal); transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease); }
+  .hdr__nav a:hover { color: var(--chalk); }
+  .hdr__nav a:hover::after, .hdr__nav a.is-active::after { transform: scaleX(1); }
+  .hdr__nav a.is-active { color: var(--chalk); }
+  .hdr__cta { display: inline-flex; align-items: center; min-height: 40px; padding: 0.4rem 0.9rem; background: var(--signal); color: var(--ink); font-weight: 750; font-stretch: 85%; text-transform: uppercase; font-size: 0.8rem; text-decoration: none; border-radius: var(--radius); white-space: nowrap; transition: transform 0.25s var(--ease); }
+  .hdr__cta:hover { transform: translateY(-1px); }
+  .hdr__in { gap: 1.25rem; }
+  .hdr__nav { margin-inline-start: auto; }
+  @media (max-width: 1099px) { .hdr__cta { margin-inline-start: auto; } }
+  @media (max-width: 420px) { .hdr__cta { display: none; } }
   .menu-btn { display: none; align-items: center; gap: 0.7rem; min-height: 44px; padding: 0.4rem 0.2rem 0.4rem 0.9rem; background: none; border: 1px solid var(--line-strong); border-radius: var(--radius); color: var(--chalk); font-family: var(--f-mono); font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; }
   .menu-btn__bars { display: grid; gap: 5px; width: 34px; padding-inline-end: 0.7rem; }
   .menu-btn__bars i { display: block; height: 2px; background: currentColor; }
@@ -187,8 +198,9 @@ const isCurrent = (href: string) => href === current;
 </style>
 
 <script>
-  import { initMenu } from '../scripts/menu';
+  import { initMenu, initScrollSpy } from '../scripts/menu';
   import { initReveal } from '../scripts/reveal';
   initMenu();
+  initScrollSpy();
   initReveal();
 </script>
