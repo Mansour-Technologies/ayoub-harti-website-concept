@@ -6,6 +6,6 @@ export default defineConfig({
   base: '/ayoub-harti-website-concept',
   trailingSlash: 'always',
   output: 'static',
-  build: { format: 'directory', inlineStylesheets: 'auto' },
+  build: { format: 'directory', inlineStylesheets: 'always' },
   devToolbar: { enabled: false },
 });

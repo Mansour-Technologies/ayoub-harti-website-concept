@@ -112,7 +112,7 @@ test('hero poster is the play button of the same official video and loads youtub
   const btn = hero.getByRole('button', { name: /^Lire la vidéo officielle : للتسجيل في عرض التفوق/ });
   await expect(btn).toBeVisible();
   // the poster image is YouTube's own frame of that same video
-  await expect(hero.locator('img')).toHaveAttribute('src', new RegExp(`^https://i\\.ytimg\\.com/vi/${VIDEO}/`));
+  await expect(hero.locator('img')).toHaveAttribute('src', new RegExp(`^https://i\\.ytimg\\.com/vi(_webp)?/${VIDEO}/`));
   expect(await hero.locator('img').evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
   await expect(page.locator('.hero .credit')).toHaveText('Image : vidéo officielle YouTube — Prof Harti');
   await expect(hero.locator('iframe')).toHaveCount(0);

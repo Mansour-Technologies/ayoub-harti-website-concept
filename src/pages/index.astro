@@ -7,9 +7,9 @@ const wa = contact.whatsapp ? whatsappHref(contact.whatsapp) : null;
 const primaryHref = wa ?? officialLinks.instagram.dm;
 const primaryVia = wa ? 'واتساب' : 'إنستغرام';
 const chapters = ['Les Ondes', 'الموجات', 'Nucléaire', 'النووي', 'Dipôle RC', 'RL', 'RLC', 'La pile', 'العمود', 'Mécanique', 'الميكانيك', 'Chimie', 'الكيمياء'];
-const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.src='${officialVideo.posterFallback}'}else{this.closest('[data-poster]').classList.add('is-fallback')}`;
+const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribute('srcset');this.src='${officialVideo.posterFallback}'}else{this.closest('[data-poster]').classList.add('is-fallback')}`;
 ---
-<Base description="Prof Harti (أيوب حارتي) — الفيزياء والكيمياء، من الأولى إعدادي حتى الثانية باك. « ما تخافش من الفيزياء ». Concept de site vitrine.">
+<Base preload={{ srcset: officialVideo.posterSrcset, sizes: officialVideo.posterSizes }} description="Prof Harti (أيوب حارتي) — الفيزياء والكيمياء، من الأولى إعدادي حتى الثانية باك. « ما تخافش من الفيزياء ». Concept de site vitrine.">
 
   <!-- ============ HERO ============ -->
   <section class="hero" aria-labelledby="hero-title">
@@ -22,7 +22,7 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.src='${offici
             <button class="poster__btn" type="button" data-embed-play>
               <span class="sr-only" lang="fr">Lire la vidéo officielle : {officialVideo.titleAr}</span>
               <span class="poster__duo" aria-hidden="true">
-                <img src={officialVideo.poster} alt="" width="1920" height="1080" fetchpriority="high" decoding="async" onerror={posterOnError} />
+                <img src={officialVideo.poster} srcset={officialVideo.posterSrcset} sizes={officialVideo.posterSizes} alt="" width="1920" height="1080" fetchpriority="high" decoding="async" onerror={posterOnError} />
               </span>
               <span class="poster__fallback" aria-hidden="true">
                 <span class="word" dir="ltr">PROF<br /><b>HARTI</b></span>

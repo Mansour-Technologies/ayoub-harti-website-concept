@@ -71,7 +71,9 @@ export const officialVideo = {
   titleAr: 'للتسجيل في عرض التفوق',
   duration: '0:59',
   /** Poster chosen in the asset dossier: YouTube's own 1920×1080 frame of this video, then the 1280×720 default. */
-  poster: 'https://i.ytimg.com/vi/bQRpHAGhIXw/oar1.jpg',
+  poster: 'https://i.ytimg.com/vi_webp/bQRpHAGhIXw/oar1.webp',
+  posterSrcset: 'https://i.ytimg.com/vi_webp/bQRpHAGhIXw/maxresdefault.webp 1280w, https://i.ytimg.com/vi_webp/bQRpHAGhIXw/oar1.webp 1920w',
+  posterSizes: '(min-width: 960px) 52vw, 100vw',
   posterFallback: 'https://i.ytimg.com/vi/bQRpHAGhIXw/maxresdefault.jpg',
 } as const;
 

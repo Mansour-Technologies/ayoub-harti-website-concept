@@ -7,8 +7,9 @@ interface Props {
   title?: string;
   description: string;
   home?: boolean;
+  preload?: { srcset: string; sizes: string };
 }
-const { title, description, home = true } = Astro.props;
+const { title, description, home = true, preload } = Astro.props;
 const fullTitle = title ? `${title} — Prof Harti | Concept de site` : `Prof Harti · أيوب حارتي — الفيزياء والكيمياء | Concept de site`;
 // On the home page anchors are local; elsewhere they point back to the home page sections.
 const anchor = (h: string) => (home ? h : withBase('') + h);
@@ -26,7 +27,8 @@ const ogImage = new URL(withBase('og.png'), Astro.site).toString();
     <meta name="theme-color" content="#0a0807" />
     <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
     <link rel="canonical" href={canonical} />
-    <link rel="preconnect" href="https://i.ytimg.com" crossorigin />
+    <link rel="preconnect" href="https://i.ytimg.com" />
+    {preload && <link rel="preload" as="image" imagesrcset={preload.srcset} imagesizes={preload.sizes} fetchpriority="high" />}
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ar_MA" />
     <meta property="og:locale:alternate" content="fr_MA" />
