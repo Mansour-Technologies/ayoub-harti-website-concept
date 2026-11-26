@@ -1,0 +1,106 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import PortraitSlot from '../../components/PortraitSlot.astro';
+import VideoFacade from '../../components/VideoFacade.astro';
+import Channels from '../../components/Channels.astro';
+import { identity, officialLinks } from '../../data/site';
+import { withBase } from '../../lib/url';
+
+const sources = [
+  { what: 'Nom, matière, niveaux, programme', where: 'Chaîne YouTube officielle @ProfHarti (description et liens)', url: officialLinks.youtube.url },
+  { what: 'Compte vérifié « Ayoub Harti », bio « PHYSICS & CHEMISTRY »', where: 'Instagram @prof_harti', url: officialLinks.instagram.url },
+  { what: 'Page officielle liée depuis YouTube', where: 'Facebook Prof.harti', url: officialLinks.facebook.url },
+  { what: 'Présentation du programme عرض التفوق', where: 'Vidéo YouTube officielle (59 s)', url: 'https://www.youtube.com/watch?v=bQRpHAGhIXw' },
+];
+---
+<Base title="Découvrir le professeur" description="Ayoub Harti, professeur de physique-chimie et créateur de contenus éducatifs : niveaux, style d’enseignement, programme et canaux officiels." current="professeur/">
+  <PageHero num="01" kicker="Découvrir le professeur" title="Ayoub <em>Harti</em>" ar={`${identity.nameAr} — ${identity.subjectAr}`} glyph="spark">
+    <p>Professeur de physique-chimie et créateur de contenus éducatifs, connu en ligne sous le nom de <strong>Prof Harti</strong>. Cette page ne reprend que des informations publiées sur ses canaux officiels.</p>
+  </PageHero>
+
+  <section class="section">
+    <div class="wrap bio">
+      <div class="bio__visual">
+        <PortraitSlot class="bio__portrait" />
+        <p class="bio__note mono">Emplacement réservé : aucune photo publique n’est reprise sans autorisation.</p>
+      </div>
+      <div class="bio__text">
+        <span class="sec-num">Ce que disent ses canaux</span>
+        <h2 class="display bio__h">Simplifier. <span class="hl">Expliquer.</span> Rassurer.</h2>
+        <p class="lead">Sur sa chaîne, la promesse est formulée en deux expressions arabes : des cours simplifiés et une explication claire. Le ton est direct, en darija, tourné vers l’élève qui a peur de la matière.</p>
+        <ul class="quotes">
+          <li><span class="ar" lang="ar" dir="rtl">دروس مبسطة و شرح واضح</span><span class="quotes__tr">« Cours simplifiés et explication claire » — bannière de la chaîne YouTube</span></li>
+          <li><span class="ar" lang="ar" dir="rtl">أنا هنا باش نساعدك ونبسط ليك الفيزياء</span><span class="quotes__tr">« Je suis là pour t’aider et te simplifier la physique » — bio Instagram</span></li>
+        </ul>
+        <p class="muted small">Traductions proposées pour ce concept ; textes originaux publiés par le professeur.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section paper">
+    <div class="wrap two">
+      <div>
+        <span class="sec-num">Niveaux et langues</span>
+        <h2 class="display two__h">Six niveaux, du collège au Bac.</h2>
+        <ol class="lvls">
+          {identity.levels.map((l, i) => <li><span class="mono">{String(i + 1).padStart(2, '0')}</span>{l}</li>)}
+        </ol>
+        <p class="muted">Selon la description de la chaîne YouTube officielle. Enseignement en darija et en arabe, avec les notations et le vocabulaire scientifiques usuels.</p>
+      </div>
+      <div>
+        <span class="sec-num">Le programme</span>
+        <h2 class="display two__h"><span class="ar" lang="ar" dir="rtl">عرض التفوق</span><br />Offre Excellence</h2>
+        <p>D’après la vidéo de présentation publiée sur sa chaîne, le programme couvre <strong>l’explication de tous les paragraphes du cours</strong>, des <strong>exercices variés</strong> et des <strong>méthodes pour aborder les examens nationaux</strong>.</p>
+        <p class="muted">Tarifs, calendrier et modalités ne sont pas publiés de manière vérifiable : ils ne sont pas affichés ici. L’inscription se fait uniquement via les canaux officiels du professeur.</p>
+        <div class="two__video"><VideoFacade id="bQRpHAGhIXw" title="للتسجيل في عرض التفوق — Prof Harti" /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <header class="sec-head">
+        <span class="sec-num">Sources</span>
+        <h2>Vérifié, daté, sourcé.</h2>
+        <p class="muted">Consultées le 26 novembre 2026. Aucune statistique d’audience, aucun diplôme, aucune ancienneté n’est affichée : ces informations n’ont pas été vérifiées.</p>
+      </header>
+      <div class="table-wrap">
+        <table class="src">
+          <thead><tr><th scope="col">Information</th><th scope="col">Source</th></tr></thead>
+          <tbody>
+            {sources.map((s) => <tr><td>{s.what}</td><td><a href={s.url} target="_blank" rel="noopener noreferrer">{s.where}<span class="sr-only"> (nouvel onglet)</span></a></td></tr>)}
+          </tbody>
+        </table>
+      </div>
+      <p class="next"><a class="btn" href={withBase('cours/')}>Voir les cours par niveau <span class="arr" aria-hidden="true">→</span></a></p>
+    </div>
+  </section>
+  <Channels />
+</Base>
+
+<style>
+  .bio { display: grid; gap: 3rem; }
+  @media (min-width: 960px) { .bio { grid-template-columns: 0.8fr 1.2fr; align-items: center; } }
+  :global(.bio__portrait) { aspect-ratio: 4 / 5; width: 100%; max-width: 460px; }
+  .bio__note { font-size: 0.7rem; color: var(--chalk-dim); margin-top: 0.75rem; letter-spacing: 0.04em; }
+  .bio__h { font-size: var(--fs-h2); margin: 0.8rem 0 1.2rem; }
+  .quotes { list-style: none; padding: 0; margin: 2rem 0 1rem; border-top: 1px solid var(--line-strong); }
+  .quotes li { display: grid; gap: 0.3rem; padding: 1.1rem 0; border-bottom: 1px solid var(--line-strong); }
+  .quotes .ar { font-size: clamp(1.3rem, 2.6vw, 1.9rem); color: var(--signal); font-weight: 700; }
+  .quotes__tr { color: var(--chalk-dim); font-size: 0.95rem; }
+  .small { font-size: var(--fs-small); }
+  .two { display: grid; gap: 3.5rem; }
+  @media (min-width: 960px) { .two { grid-template-columns: 1fr 1fr; gap: 5rem; } }
+  .two__h { font-size: clamp(2rem, 4vw, 3.2rem); margin: 0.8rem 0 1.5rem; }
+  .two__h .ar { font-size: 0.8em; color: var(--bordeaux); }
+  .lvls { list-style: none; margin: 0 0 1.5rem; padding: 0; border-top: 2px solid var(--paper-ink); }
+  .lvls li { display: flex; gap: 1rem; align-items: baseline; padding: 0.7rem 0; border-bottom: 1px solid rgba(26, 20, 18, 0.18); font-weight: 650; font-size: 1.1rem; }
+  .lvls .mono { color: var(--bordeaux); font-size: 0.78rem; }
+  .two__video { margin-top: 1.5rem; max-width: 560px; }
+  .table-wrap { overflow-x: auto; }
+  .src { width: 100%; border-collapse: collapse; min-width: 520px; }
+  .src th { text-align: start; font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--chalk-dim); font-weight: 500; padding: 0.7rem 0.5rem; border-bottom: 1px solid var(--line-strong); }
+  .src td { padding: 1rem 0.5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .next { margin-top: 2.5rem; }
+</style>

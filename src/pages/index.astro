@@ -1,0 +1,306 @@
+---
+import Base from '../layouts/Base.astro';
+import VideoFacade from '../components/VideoFacade.astro';
+import Glyph from '../components/Glyph.astro';
+import PortraitSlot from '../components/PortraitSlot.astro';
+import Channels from '../components/Channels.astro';
+import { identity } from '../data/site';
+import { levels, chapters } from '../data/courses';
+import { questions } from '../data/quiz';
+import { withBase } from '../lib/url';
+
+const teaserQ = questions.find((q) => q.id === 'q12')!;
+const countBy = (id: string) => chapters.filter((c) => c.level === id).length;
+const levelLines: Record<string, string> = {
+  '3ac': 'Les bases solides : forces, loi d’Ohm, pH.',
+  tc: 'Le passage au lycée : gravitation, mole, atome.',
+  '1bac': 'L’énergie sous toutes ses formes, l’oxydo-réduction.',
+  '2bac': 'Ondes, nucléaire, RC-RL-RLC, Newton, chimie : l’examen national.',
+};
+---
+<Base title="Accueil" description="Concept de site pour Prof Ayoub Harti, professeur de physique-chimie : cours par niveau, vidéothèque, révision du BAC et laboratoire interactif.">
+  <section class="hero">
+    <div class="hero__grid wrap">
+      <div class="hero__text">
+        <p class="kicker hero__kicker"><span class="hl">●</span> Prof {identity.name} · Physique-Chimie · Collège → 2ème Bac</p>
+        <h1 class="display hero__title">
+          <span class="hero__l1">La physique,</span>
+          <span class="hero__l2">sans <span class="hero__peur">peur.</span></span>
+        </h1>
+        <p class="ar hero__ar" lang="ar" dir="rtl">نفهمو الفيزياء خطوة بخطوة</p>
+        <p class="lead hero__lead">Un espace unique pour apprendre avec Prof Harti : les cours rangés par niveau, les vidéos par chapitre, une révision du BAC qui corrige à chaque réponse, et un laboratoire où l’on voit enfin la formule bouger.</p>
+        <div class="hero__cta">
+          <a class="btn" href={withBase('cours/')}>Trouver mon cours <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn ghost" href={withBase('examens/')}>Réviser le BAC</a>
+        </div>
+        <p class="hero__fine mono">Accroche originale proposée pour ce concept — pas une citation du professeur.</p>
+      </div>
+
+      <div class="hero__stage" aria-label="Présentation vidéo officielle">
+        <div class="stage">
+          <span class="stage__word display" aria-hidden="true">HARTI</span>
+          <svg class="stage__orbits" viewBox="0 0 400 400" aria-hidden="true">
+            <ellipse cx="200" cy="200" rx="185" ry="70" transform="rotate(-28 200 200)" />
+            <ellipse cx="200" cy="200" rx="185" ry="70" transform="rotate(32 200 200)" />
+            <circle class="stage__e" r="6" cx="0" cy="0"><animateMotion dur="9s" repeatCount="indefinite" path="M15,200 a185,70 0 1,0 370,0 a185,70 0 1,0 -370,0" /></circle>
+          </svg>
+          <PortraitSlot class="stage__portrait" />
+          <div class="stage__video">
+            <VideoFacade id="bQRpHAGhIXw" title="للتسجيل في عرض التفوق — Prof Harti" eager />
+            <p class="stage__cap"><span class="ar" lang="ar" dir="rtl">عرض التفوق</span> · Présentation de l’Offre Excellence, chaîne officielle</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="levelbar" aria-label="Accès direct par niveau">
+      <div class="wrap levelbar__in">
+        <span class="kicker">Accès direct</span>
+        {levels.map((l) => (
+          <a href={withBase(`cours/?niveau=${l.id}`)}><span>{l.label}</span><span class="ar" lang="ar" dir="rtl">{l.labelAr}</span></a>
+        ))}
+      </div>
+    </nav>
+  </section>
+
+  <!-- 01 — Méthode -->
+  <section class="section method">
+    <div class="wrap">
+      <header class="sec-head" data-reveal>
+        <span class="sec-num">01 — La méthode, en trois temps</span>
+        <h2>Comprendre d’abord. <span class="hl">Calculer ensuite.</span></h2>
+      </header>
+      <ol class="steps">
+        <li data-reveal>
+          <span class="steps__n display">1</span>
+          <div><h3>L’idée avant la formule</h3><p>Chaque chapitre s’ouvre sur une phrase qui dit ce qui se passe physiquement. La formule arrive après, comme une conséquence.</p></div>
+          <Glyph kind="spark" size={52} />
+        </li>
+        <li data-reveal>
+          <span class="steps__n display">2</span>
+          <div><h3>Voir et manipuler</h3><p>Vidéos rangées par chapitre et simulations interactives : on change un paramètre, on observe, on retient.</p></div>
+          <Glyph kind="parabola" size={52} />
+        </li>
+        <li data-reveal>
+          <span class="steps__n display">3</span>
+          <div><h3>S’entraîner comme le jour J</h3><p>Questions type examen national, correction immédiate, check-lists par thème et suivi de progression.</p></div>
+          <Glyph kind="circuit" size={52} />
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 02 — Niveaux -->
+  <section class="section paper levels">
+    <div class="wrap">
+      <header class="sec-head" data-reveal>
+        <span class="sec-num">02 — Quatre niveaux, un même fil</span>
+        <h2>Du collège au baccalauréat.</h2>
+        <p class="muted">Niveaux annoncés sur la chaîne officielle : de la 1ère année collège à la 2ème Bac. Ce concept détaille les quatre niveaux clés.</p>
+      </header>
+      <ul class="lvl">
+        {levels.map((l, i) => (
+          <li data-reveal>
+            <a href={withBase(`cours/?niveau=${l.id}`)}>
+              <span class="lvl__i mono">0{i + 1}</span>
+              <span class="lvl__name display">{l.label}</span>
+              <span class="lvl__ar ar" lang="ar" dir="rtl">{l.labelAr}</span>
+              <span class="lvl__line">{levelLines[l.id]}</span>
+              <span class="lvl__count mono">{countBy(l.id)} chapitres <span aria-hidden="true">→</span></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 03 — Laboratoire -->
+  <section class="section bordeaux lab-teaser">
+    <div class="wrap lab-teaser__grid">
+      <div data-reveal>
+        <span class="sec-num">03 — Laboratoire interactif</span>
+        <h2 class="display lab-teaser__title">Lance. Observe. <br /><span class="hl">Comprends.</span></h2>
+        <p class="lead">Le mouvement d’un projectile, en direct : choisis la vitesse, l’angle, la gravité (Terre ou Lune) et regarde les composantes du vecteur vitesse évoluer à chaque instant.</p>
+        <a class="btn" href={withBase('laboratoire/')}>Ouvrir le laboratoire <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <figure class="lab-teaser__fig" data-reveal>
+        <svg viewBox="0 0 520 300" role="img" aria-label="Schéma : trajectoire parabolique d’un projectile avec vecteurs vitesse">
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" /></marker></defs>
+          <g stroke="rgba(237,230,218,.18)" stroke-width="1">{Array.from({ length: 11 }, (_, i) => <line x1={30 + i * 46} y1="20" x2={30 + i * 46} y2="262" />)}</g>
+          <line x1="20" y1="262" x2="510" y2="262" stroke="var(--chalk)" stroke-width="1.5" />
+          <path class="lt-path" d="M30 262 Q 260 -40 490 262" fill="none" stroke="var(--signal)" stroke-width="3" />
+          <g color="var(--chalk)"><line x1="30" y1="262" x2="100" y2="182" stroke="currentColor" stroke-width="2.5" marker-end="url(#ah)" /></g>
+          <g color="var(--signal)"><line x1="260" y1="111" x2="350" y2="111" stroke="currentColor" stroke-width="2.5" marker-end="url(#ah)" /></g>
+          <circle cx="260" cy="111" r="7" fill="var(--chalk)" />
+          <text x="270" y="98" fill="var(--chalk)" font-family="var(--f-mono)" font-size="13">v = v₀ cos α</text>
+          <text x="110" y="196" fill="var(--chalk)" font-family="var(--f-mono)" font-size="13">v₀</text>
+          <line x1="260" y1="111" x2="260" y2="262" stroke="var(--chalk)" stroke-dasharray="4 5" opacity=".6" />
+          <text x="268" y="200" fill="var(--chalk)" font-family="var(--f-mono)" font-size="13">H</text>
+          <text x="236" y="286" fill="var(--chalk)" font-family="var(--f-mono)" font-size="13">R = v₀² sin 2α / g</text>
+        </svg>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 04 — BAC -->
+  <section class="section bac-teaser">
+    <div class="wrap bac-teaser__grid">
+      <header class="sec-head" data-reveal>
+        <span class="sec-num">04 — Préparation aux examens</span>
+        <h2>Une question. <span class="hl">Tout de suite.</span></h2>
+        <p class="muted">Question originale de démonstration, style examen national (2ème Bac). Réponds : l’explication s’affiche immédiatement.</p>
+        <a class="link-arrow" href={withBase('examens/')}>18 questions, 5 thèmes, check-lists → </a>
+      </header>
+      <form class="mini-q" data-mini-q data-answer={teaserQ.answer} data-reveal>
+        <fieldset>
+          <legend>{teaserQ.q}</legend>
+          <div class="mini-q__opts">
+            {teaserQ.options.map((o, i) => (
+              <label><input type="radio" name="mq" value={i} /> <span class="mini-q__letter mono">{String.fromCharCode(65 + i)}</span> <span>{o}</span></label>
+            ))}
+          </div>
+        </fieldset>
+        <p class="mini-q__out" data-out aria-live="polite"></p>
+        <p class="mini-q__why" data-why hidden>{teaserQ.why}</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- 05 — Professeur -->
+  <section class="section paper prof-teaser">
+    <div class="wrap prof-teaser__grid">
+      <div data-reveal>
+        <span class="sec-num">05 — Le professeur</span>
+        <h2 class="display prof-teaser__title">Ayoub Harti.<br /><span class="prof-teaser__ar ar" lang="ar" dir="rtl">{identity.nameAr}</span></h2>
+        <p class="lead">Professeur de physique-chimie et créateur de contenus éducatifs au Maroc. Il s’adresse aux élèves en darija et en arabe, avec un fil rouge assumé sur sa chaîne : des cours simplifiés et une explication claire.</p>
+        <a class="btn ghost" href={withBase('professeur/')}>Découvrir le professeur <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <dl class="facts" data-reveal>
+        <div><dt>Matière</dt><dd>Physique-Chimie</dd></div>
+        <div><dt>Niveaux</dt><dd>1ère année collège → 2ème Bac</dd></div>
+        <div><dt>Langues</dt><dd>Darija, arabe · vocabulaire scientifique français</dd></div>
+        <div><dt>Programme</dt><dd><span class="ar" lang="ar" dir="rtl">عرض التفوق</span> — Offre Excellence</dd></div>
+        <div><dt>Sources</dt><dd>Chaîne YouTube @ProfHarti, Instagram @prof_harti (consultés le 26/11/2026)</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <Channels />
+</Base>
+
+<style>
+  .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(60% 70% at 78% 35%, rgba(107, 26, 43, 0.55), transparent 70%), radial-gradient(30% 40% at 80% 20%, rgba(247, 197, 30, 0.08), transparent 70%); pointer-events: none; }
+  .hero__grid { position: relative; display: grid; gap: 2.5rem; padding-block: clamp(2rem, 6vw, 5rem) clamp(2.5rem, 5vw, 4rem); }
+  @media (min-width: 1000px) { .hero__grid { grid-template-columns: 1.15fr 0.85fr; align-items: center; gap: 3rem; } }
+  .hero__kicker { margin-bottom: 1.2rem; }
+  .hero__title { font-size: var(--fs-mega); margin: 0; }
+  @media (max-width: 999px) { .hero__title { font-size: min(14.6vw, 6.5rem); } }
+  @media (min-width: 1000px) { .hero__title { font-size: min(7.4vw, 7.6rem); } .hero__l1 { white-space: nowrap; } }
+  .hero__l1, .hero__l2 { display: block; }
+  .hero__l2 { margin-top: 0.04em; }
+  .hero__peur { position: relative; color: var(--ink); background: var(--signal); padding: 0 0.08em; display: inline-block; transform: rotate(-1.6deg); }
+  .hero__ar { font-size: clamp(1.15rem, 2.2vw, 1.6rem); color: var(--gold); margin: 1.2rem 0 1rem; font-weight: 600; }
+  .hero__lead { color: var(--chalk-dim); }
+  .hero__cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+  .hero__fine { font-size: 0.68rem; color: #8f8578; margin-top: 1.25rem; letter-spacing: 0.04em; }
+
+  .stage { position: relative; aspect-ratio: 4 / 4.6; max-width: 520px; margin-inline: auto; width: 100%; }
+  .stage__word { position: absolute; right: -0.06em; top: -0.05em; font-size: clamp(6rem, 22vw, 12rem); writing-mode: vertical-rl; color: transparent; -webkit-text-stroke: 1.5px rgba(237, 230, 218, 0.2); line-height: 0.8; pointer-events: none; }
+  .stage__orbits { position: absolute; left: -8%; top: -6%; width: 88%; fill: none; stroke: rgba(200, 160, 99, 0.45); stroke-width: 1.2; z-index: 1; pointer-events: none; }
+  .stage__e { fill: var(--signal); stroke: none; }
+  :global(.stage__portrait) { position: absolute; left: 0; top: 0; width: 72%; height: 78%; }
+  .stage__video { z-index: 2; position: absolute; right: 0; bottom: 0; width: 76%; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8); border: 1px solid var(--line-strong); background: var(--ink); }
+  .stage__cap { margin: 0; padding: 0.6rem 0.75rem; font-size: 0.8rem; color: var(--chalk-dim); background: var(--ink-2); }
+  .stage__cap .ar { color: var(--signal); }
+  @media (prefers-reduced-motion: reduce) { .stage__e { display: none; } }
+
+  .levelbar { position: relative; border-top: 1px solid var(--line); background: var(--ink-2); }
+  .levelbar__in { display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
+  .levelbar__in .kicker { display: flex; align-items: center; padding-inline-end: 1.25rem; white-space: nowrap; }
+  .levelbar a { flex: 1 0 auto; display: flex; flex-direction: column; gap: 0.1rem; padding: 0.9rem 1.25rem; border-inline-start: 1px solid var(--line); text-decoration: none; min-width: 140px; }
+  .levelbar a span:first-child { font-weight: 800; font-stretch: 80%; text-transform: uppercase; font-size: 1.05rem; }
+  .levelbar a .ar { font-size: 0.82rem; color: var(--chalk-dim); line-height: 1.4; }
+  .levelbar a:hover { background: var(--signal); color: var(--ink); }
+  .levelbar a:hover .ar { color: var(--ink); }
+  @media (max-width: 640px) { .levelbar__in .kicker { display: none; } .levelbar__in { padding-inline: 0; } }
+
+  .steps { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+  .steps li { display: grid; grid-template-columns: auto 1fr; gap: 1rem 2rem; padding-block: 1.75rem; border-bottom: 1px solid var(--line); align-items: start; }
+  .steps li :global(.glyph) { display: none; color: var(--chalk-dim); }
+  @media (min-width: 760px) { .steps li { grid-template-columns: 8rem 1fr 4rem; align-items: center; } .steps li :global(.glyph) { display: block; } }
+  .steps__n { font-size: clamp(3.5rem, 8vw, 6rem); color: var(--signal); line-height: 0.8; }
+  .steps h3 { font-size: var(--fs-h3); font-stretch: 85%; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .steps p { margin: 0; color: var(--chalk-dim); max-width: 58ch; }
+
+  .lvl { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--paper-ink); }
+  .lvl a { display: grid; grid-template-columns: 2.5rem 1fr auto; grid-template-areas: 'i name ar' 'i line line' 'i count count'; gap: 0.2rem 1rem; padding: 1.3rem 0.5rem; border-bottom: 1px solid rgba(26, 20, 18, 0.2); text-decoration: none; transition: background 0.25s, padding 0.3s var(--ease); }
+  @media (min-width: 900px) { .lvl a { grid-template-columns: 3rem minmax(14rem, 0.9fr) 1.4fr auto auto; grid-template-areas: 'i name line ar count'; align-items: center; padding: 1.6rem 0.75rem; } }
+  .lvl a:hover { background: var(--paper-ink); color: var(--paper); padding-inline-start: 1.5rem; }
+  .lvl a:hover .lvl__count, .lvl a:hover .lvl__ar { color: var(--signal); }
+  .lvl__i { grid-area: i; color: var(--bordeaux); font-size: 0.8rem; padding-top: 0.4rem; }
+  .lvl a:hover .lvl__i { color: var(--signal); }
+  .lvl__name { grid-area: name; font-size: clamp(2rem, 4.5vw, 3.4rem); }
+  .lvl__ar { grid-area: ar; color: var(--bordeaux); font-size: 1rem; }
+  .lvl__line { grid-area: line; color: inherit; opacity: 0.85; }
+  .lvl__count { grid-area: count; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--paper-muted); white-space: nowrap; }
+
+  .lab-teaser { background: radial-gradient(80% 90% at 100% 0%, #7d2235 0%, var(--bordeaux) 55%, var(--bordeaux-2) 100%); }
+  .lab-teaser__grid { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 960px) { .lab-teaser__grid { grid-template-columns: 0.9fr 1.1fr; } }
+  .lab-teaser__title { font-size: var(--fs-h1); margin: 0.8rem 0 1.2rem; }
+  .lab-teaser .lead { margin-bottom: 1.75rem; color: #f0e3dd; }
+  .lab-teaser__fig { margin: 0; background: rgba(14, 11, 10, 0.35); border: 1px solid rgba(237, 230, 218, 0.2); padding: 1rem; }
+  @media (prefers-reduced-motion: no-preference) {
+    .lt-path { stroke-dasharray: 700; stroke-dashoffset: 700; }
+    .lab-teaser__fig.in .lt-path { animation: draw 1.8s var(--ease) 0.2s forwards; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+  }
+
+  .bac-teaser__grid { display: grid; gap: 2rem; }
+  @media (min-width: 960px) { .bac-teaser__grid { grid-template-columns: 0.85fr 1.15fr; align-items: start; } }
+  .mini-q { border: 1px solid var(--line-strong); padding: clamp(1.25rem, 3vw, 2rem); background: var(--ink-2); }
+  .mini-q fieldset { border: 0; padding: 0; margin: 0; }
+  .mini-q legend { font-size: clamp(1.1rem, 1.8vw, 1.35rem); font-weight: 650; line-height: 1.4; margin-bottom: 1.25rem; padding: 0; }
+  .mini-q__opts { display: grid; gap: 0.6rem; }
+  @media (min-width: 560px) { .mini-q__opts { grid-template-columns: 1fr 1fr; } }
+  .mini-q label { display: flex; align-items: center; gap: 0.75rem; min-height: 56px; padding: 0.6rem 0.9rem; border: 1px solid var(--line-strong); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+  .mini-q label:hover { border-color: var(--signal); }
+  .mini-q input { accent-color: var(--signal); width: 1.1rem; height: 1.1rem; }
+  .mini-q__letter { color: var(--signal); font-weight: 700; }
+  .mini-q label.is-right { border-color: var(--ok); background: rgba(124, 207, 138, 0.1); }
+  .mini-q label.is-wrong { border-color: var(--bad); background: rgba(255, 138, 122, 0.08); }
+  .mini-q__out { font-weight: 750; margin: 1.25rem 0 0.3rem; min-height: 1.6em; }
+  .mini-q__why { color: var(--chalk-dim); margin: 0; font-family: var(--f-mono); font-size: 0.92rem; }
+
+  .prof-teaser__grid { display: grid; gap: 3rem; }
+  @media (min-width: 960px) { .prof-teaser__grid { grid-template-columns: 1.1fr 0.9fr; align-items: end; } }
+  .prof-teaser__title { font-size: var(--fs-h1); margin: 0.8rem 0 1.25rem; }
+  .prof-teaser__ar { display: inline-block; font-size: 0.42em; color: var(--bordeaux); text-transform: none; margin-top: 0.4rem; font-weight: 700; }
+  .prof-teaser .lead { color: var(--paper-ink); margin-bottom: 1.75rem; }
+  .facts { margin: 0; border-top: 2px solid var(--paper-ink); }
+  .facts div { display: grid; grid-template-columns: 7.5rem 1fr; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid rgba(26, 20, 18, 0.18); }
+  .facts dt { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--paper-muted); padding-top: 0.2rem; }
+  .facts dd { margin: 0; font-weight: 600; }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-mini-q]');
+  if (form) {
+    const answer = Number(form.dataset.answer);
+    const out = form.querySelector<HTMLElement>('[data-out]')!;
+    const why = form.querySelector<HTMLElement>('[data-why]')!;
+    form.addEventListener('change', (e) => {
+      const t = e.target as HTMLInputElement;
+      if (t.name !== 'mq') return;
+      const v = Number(t.value);
+      form.querySelectorAll('label').forEach((l, i) => {
+        l.classList.toggle('is-right', i === answer);
+        l.classList.toggle('is-wrong', i === v && v !== answer);
+      });
+      out.textContent = v === answer ? 'Bonne réponse ✓' : 'Pas tout à fait — la bonne réponse est surlignée.';
+      why.hidden = false;
+    });
+    form.addEventListener('submit', (e) => e.preventDefault());
+  }
+</script>
