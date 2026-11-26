@@ -1,0 +1,30 @@
+// Production screenshot set for the showcase (BASE defaults to the live URL).
+import { chromium } from '@playwright/test';
+const BASE = process.env.BASE ?? 'https://mansour-technologies.github.io/ayoub-harti-website-concept/';
+const OUT = process.argv[2];
+const b = await chromium.launch(process.env.PW_CHROME ? { executablePath: process.env.PW_CHROME } : {});
+const shot = async (name, w, h, full, act) => {
+  const p = await b.newPage({ viewport: { width: w, height: h } });
+  const errs = [];
+  p.on('console', (m) => m.type() === 'error' && errs.push(m.text()));
+  p.on('response', (r) => r.status() >= 400 && errs.push(r.status() + ' ' + r.url()));
+  await p.goto(BASE, { waitUntil: 'networkidle' });
+  if (full) await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 500) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 50)); } window.scrollTo(0, 0); await Promise.all([...document.images].map((i) => (i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; })))); });
+  await p.evaluate(() => document.querySelectorAll('[data-reveal]').forEach((e) => e.classList.add('in')));
+  if (act) await act(p);
+  await p.waitForTimeout(1200);
+  await p.screenshot({ path: `${OUT}/${name}.png`, fullPage: full });
+  console.log(name, errs.length ? errs : 'ok');
+  await p.close();
+};
+const to = (id) => (p) => p.evaluate((i) => document.getElementById(i).scrollIntoView({ behavior: 'instant' }), id);
+await shot('01-desktop-home', 1440, 900, false);
+await shot('02-mobile-home', 375, 812, false);
+await shot('03-desktop-full', 1440, 900, true);
+await shot('04-mobile-full', 375, 812, true);
+await shot('05-mobile-nav-open', 375, 812, false, (p) => p.click('[data-menu-open]'));
+await shot('06-desktop-contact', 1440, 900, false, to('contact'));
+await shot('07-mobile-contact', 375, 812, false, to('contact'));
+await shot('08-desktop-offre', 1440, 900, false, to('offre'));
+await shot('09-desktop-video', 1440, 900, false, to('video'));
+await b.close();
