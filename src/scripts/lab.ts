@@ -74,9 +74,9 @@ export function initLab(root: HTMLElement): void {
     // grid
     const step = niceStep(Math.max(v.spanX, v.spanY));
     ctx.strokeStyle = col.grid; ctx.lineWidth = 1; ctx.fillStyle = col.dim; ctx.font = '11px "JetBrains Mono Variable", monospace';
-    for (let x = 0; x <= v.spanX; x += step) { const X = v.ox + x * v.s; ctx.beginPath(); ctx.moveTo(X, v.oy); ctx.lineTo(X, 8); ctx.stroke(); ctx.fillText(fmt(x, step < 1 ? 1 : 0), X - 6, v.oy + 18); }
+    for (let x = 0; x <= v.spanX; x += step) { const X = v.ox + x * v.s; ctx.beginPath(); ctx.moveTo(X, v.oy); ctx.lineTo(X, 8); ctx.stroke(); if (X < W - 64) ctx.fillText(fmt(x, step < 1 ? 1 : 0), X - 6, v.oy + 18); }
     for (let y = step; y <= v.spanY; y += step) { const Y = v.oy - y * v.s; ctx.beginPath(); ctx.moveTo(v.ox, Y); ctx.lineTo(W - 8, Y); ctx.stroke(); ctx.fillText(fmt(y, step < 1 ? 1 : 0), 6, Y + 4); }
-    ctx.fillText('x (m)', W - 52, v.oy - 8); ctx.fillText('y (m)', 6, 18);
+    ctx.fillText('x (m)', W - 48, v.oy + 18); ctx.fillText('y (m)', 6, 18);
     // ground
     ctx.strokeStyle = col.chalk; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(v.ox - 10, v.oy); ctx.lineTo(W - 8, v.oy); ctx.stroke();
     // ghost
@@ -88,7 +88,7 @@ export function initLab(root: HTMLElement): void {
     ctx.strokeStyle = 'rgba(247,197,30,.35)'; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(apexX, apexY); ctx.lineTo(apexX, v.oy); ctx.stroke(); ctx.setLineDash([]);
     ctx.fillStyle = col.signal; ctx.font = '600 12px "JetBrains Mono Variable", monospace';
     ctx.fillText(`H = ${fmt(H)} m`, Math.min(apexX + 8, W - 110), Math.max(apexY - 8, 14));
-    ctx.fillText(`R = ${fmt(R)} m`, Math.min(v.ox + R * v.s - 40, W - 110), v.oy - 8);
+    ctx.fillText(`R = ${fmt(R)} m`, Math.min(v.ox + R * v.s - 50, W - 120), v.oy - 10);
     // travelled path
     const tt = Math.min(t, T);
     if (tt > 0) { ctx.strokeStyle = col.signal; ctx.lineWidth = 3; path(p, tt, v); ctx.stroke(); }
