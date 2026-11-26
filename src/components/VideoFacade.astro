@@ -3,12 +3,12 @@
  * Click-to-load YouTube facade. Thumbnail from i.ytimg.com (official), player from youtube-nocookie.com.
  * Nothing from YouTube's player loads until the visitor clicks. No autoplay before interaction.
  */
-interface Props { id: string; title: string; label?: string; class?: string; eager?: boolean }
-const { id, title, label = 'Vidéo officielle · YouTube @ProfHarti', class: cls = '', eager = false } = Astro.props;
+interface Props { id: string; title: string; label?: string; class?: string; eager?: boolean; hd?: boolean }
+const { id, title, label = 'Vidéo officielle · YouTube @ProfHarti', class: cls = '', eager = false, hd = false } = Astro.props;
 ---
-<div class={`yt ${cls}`} data-yt={id} data-yt-title={title}>
+<div class={`yt ${hd ? 'yt--hd' : ''} ${cls}`} data-yt={id} data-yt-title={title}>
   <button type="button" class="yt__btn"><span class="sr-only">Lire la vidéo : {title} (charge le lecteur YouTube) — </span>
-    <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" width="480" height="360" loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager ? 'high' : 'auto'} />
+    <img src={`https://i.ytimg.com/vi/${id}/${hd ? 'maxresdefault' : 'hqdefault'}.jpg`} alt="" width={hd ? 1280 : 480} height={hd ? 720 : 360} loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager ? 'high' : 'auto'} />
     <span class="yt__play" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
     <span class="yt__label mono">{label}</span>
   </button>

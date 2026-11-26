@@ -3,110 +3,202 @@ import Base from '../layouts/Base.astro';
 import VideoFacade from '../components/VideoFacade.astro';
 import Glyph from '../components/Glyph.astro';
 import PortraitSlot from '../components/PortraitSlot.astro';
-import Channels from '../components/Channels.astro';
-import { identity } from '../data/site';
-import { levels, chapters } from '../data/courses';
-import { questions } from '../data/quiz';
-import { withBase } from '../lib/url';
+import { identity, levels, programme, officialVideo, officialLinks, contact } from '../data/site';
 
-const teaserQ = questions.find((q) => q.id === 'q12')!;
-const countBy = (id: string) => chapters.filter((c) => c.level === id).length;
-const levelLines: Record<string, string> = {
-  '3ac': 'Les bases solides : forces, loi d’Ohm, pH.',
-  tc: 'Le passage au lycée : gravitation, mole, atome.',
-  '1bac': 'L’énergie sous toutes ses formes, l’oxydo-réduction.',
-  '2bac': 'Ondes, nucléaire, RC-RL-RLC, Newton, chimie : l’examen national.',
-};
+const collegeLv = levels.filter((l) => l.cycle === 'Collège');
+const lyceeLv = levels.filter((l) => l.cycle === 'Lycée');
+const wa = contact.whatsapp ? `https://wa.me/${contact.whatsapp.replace(/\D/g, '')}` : null;
+const ext = { target: '_blank', rel: 'noopener noreferrer' } as const;
 ---
-<Base title="Accueil" description="Concept de site pour Prof Ayoub Harti, professeur de physique-chimie : cours par niveau, vidéothèque, révision du BAC et laboratoire interactif.">
-  <section class="hero">
+<Base title="Accueil" description="Prof Ayoub Harti — professeur de physique-chimie, du collège à la 2ème Bac. Son approche, les niveaux, l’Offre Excellence (عرض التفوق) et ses canaux officiels.">
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
     <div class="hero__grid wrap">
       <div class="hero__text">
-        <p class="kicker hero__kicker"><span class="hl">●</span> Prof {identity.name} · Physique-Chimie · Collège → 2ème Bac</p>
-        <h1 class="display hero__title">
+        <p class="kicker hero__kicker"><span class="hl" aria-hidden="true">●</span> Prof {identity.name} · {identity.subject} · Collège → 2ème Bac</p>
+        <h1 class="display hero__title" id="hero-title">
           <span class="hero__l1">La physique,</span>
-          <span class="hero__l2">sans <span class="hero__peur">peur.</span></span>
+          <span class="hero__l2">sans <span class="hero__peur"><span>peur.</span></span></span>
         </h1>
         <p class="ar hero__ar" lang="ar" dir="rtl">نفهمو الفيزياء خطوة بخطوة</p>
-        <p class="lead hero__lead">Un espace unique pour apprendre avec Prof Harti : les cours rangés par niveau, les vidéos par chapitre, une révision du BAC qui corrige à chaque réponse, et un laboratoire où l’on voit enfin la formule bouger.</p>
+        <p class="lead hero__lead">Ayoub Harti enseigne la physique et la chimie aux élèves marocains, du collège au baccalauréat, avec une promesse simple : des cours simplifiés et une explication claire.</p>
         <div class="hero__cta">
-          <a class="btn" href={withBase('cours/')}>Trouver mon cours <span class="arr" aria-hidden="true">→</span></a>
-          <a class="btn ghost" href={withBase('examens/')}>Réviser le BAC</a>
+          <a class="btn" href={officialLinks.instagram.dm} {...ext}>Écrire au prof <span class="arr" aria-hidden="true">→</span><span class="sr-only"> (Instagram, nouvel onglet)</span></a>
+          <a class="btn ghost" href="#offre">Découvrir <span class="ar" lang="ar">عرض التفوق</span></a>
         </div>
         <p class="hero__fine mono">Accroche originale proposée pour ce concept — pas une citation du professeur.</p>
       </div>
 
-      <div class="hero__stage" aria-label="Présentation vidéo officielle">
+      <div class="hero__stage">
         <div class="stage">
           <span class="stage__word display" aria-hidden="true">HARTI</span>
           <svg class="stage__orbits" viewBox="0 0 400 400" aria-hidden="true">
             <ellipse cx="200" cy="200" rx="185" ry="70" transform="rotate(-28 200 200)" />
             <ellipse cx="200" cy="200" rx="185" ry="70" transform="rotate(32 200 200)" />
-            <circle class="stage__e" r="6" cx="0" cy="0"><animateMotion dur="9s" repeatCount="indefinite" path="M15,200 a185,70 0 1,0 370,0 a185,70 0 1,0 -370,0" /></circle>
+            <circle class="stage__e" r="6"><animateMotion dur="9s" repeatCount="indefinite" path="M15,200 a185,70 0 1,0 370,0 a185,70 0 1,0 -370,0" /></circle>
           </svg>
           <PortraitSlot class="stage__portrait" />
-          <div class="stage__video">
-            <VideoFacade id="bQRpHAGhIXw" title="للتسجيل في عرض التفوق — Prof Harti" eager />
-            <p class="stage__cap"><span class="ar" lang="ar" dir="rtl">عرض التفوق</span> · Présentation de l’Offre Excellence, chaîne officielle</p>
+          <div class="idcard">
+            <p class="idcard__ar ar" lang="ar" dir="rtl">{identity.nameAr}</p>
+            <p class="idcard__name display">Prof Harti</p>
+            <p class="idcard__meta mono"><span>Physique</span><span aria-hidden="true">·</span><span>Chimie</span></p>
+            <a class="idcard__handle mono" href={officialLinks.instagram.url} {...ext}>{officialLinks.instagram.handle}<span class="sr-only"> sur Instagram (nouvel onglet)</span></a>
           </div>
         </div>
       </div>
     </div>
-
-    <nav class="levelbar" aria-label="Accès direct par niveau">
-      <div class="wrap levelbar__in">
-        <span class="kicker">Accès direct</span>
-        {levels.map((l) => (
-          <a href={withBase(`cours/?niveau=${l.id}`)}><span>{l.label}</span><span class="ar" lang="ar" dir="rtl">{l.labelAr}</span></a>
+    <div class="band" aria-hidden="true">
+      <div class="band__in">
+        {[0, 1].map(() => (
+          <span class="band__seq">
+            <span>Physique</span><i>✦</i><span>Chimie</span><i>✦</i><span class="ar">الفيزياء والكيمياء</span><i>✦</i><span>1AC → 2BAC</span><i>✦</i><span class="ar">ما تخافش</span><i>✦</i>
+          </span>
         ))}
       </div>
-    </nav>
-  </section>
-
-  <!-- 01 — Méthode -->
-  <section class="section method">
-    <div class="wrap">
-      <header class="sec-head" data-reveal>
-        <span class="sec-num">01 — La méthode, en trois temps</span>
-        <h2>Comprendre d’abord. <span class="hl">Calculer ensuite.</span></h2>
-      </header>
-      <ol class="steps">
-        <li data-reveal>
-          <span class="steps__n display">1</span>
-          <div><h3>L’idée avant la formule</h3><p>Chaque chapitre s’ouvre sur une phrase qui dit ce qui se passe physiquement. La formule arrive après, comme une conséquence.</p></div>
-          <Glyph kind="spark" size={52} />
-        </li>
-        <li data-reveal>
-          <span class="steps__n display">2</span>
-          <div><h3>Voir et manipuler</h3><p>Vidéos rangées par chapitre et simulations interactives : on change un paramètre, on observe, on retient.</p></div>
-          <Glyph kind="parabola" size={52} />
-        </li>
-        <li data-reveal>
-          <span class="steps__n display">3</span>
-          <div><h3>S’entraîner comme le jour J</h3><p>Questions type examen national, correction immédiate, check-lists par thème et suivi de progression.</p></div>
-          <Glyph kind="circuit" size={52} />
-        </li>
-      </ol>
     </div>
   </section>
 
-  <!-- 02 — Niveaux -->
-  <section class="section paper levels">
+  <!-- 01 PROFESSEUR -->
+  <section class="section prof" id="professeur" aria-labelledby="prof-title">
+    <div class="wrap">
+      <div class="prof__head" data-reveal>
+        <span class="sec-num">01 — Le professeur</span>
+        <h2 class="display prof__title" id="prof-title">Simplifier.<br /><span class="hl">Expliquer.</span><br />Accompagner.</h2>
+      </div>
+      <div class="prof__grid">
+        <blockquote class="quote" data-reveal>
+          <p class="quote__ar ar" lang="ar" dir="rtl">دروس مبسطة و شرح واضح</p>
+          <p class="quote__fr">« Des cours simplifiés et une explication claire. »</p>
+          <footer class="mono">— Bannière de la chaîne YouTube officielle</footer>
+        </blockquote>
+        <blockquote class="quote" data-reveal>
+          <p class="quote__ar ar" lang="ar" dir="rtl">أنا هنا باش نساعدك ونبسط ليك الفيزياء</p>
+          <p class="quote__fr">« Je suis là pour t’aider et te simplifier la physique. »</p>
+          <footer class="mono">— Bio du compte Instagram @prof_harti</footer>
+        </blockquote>
+      </div>
+      <ol class="principles">
+        <li data-reveal>
+          <Glyph kind="spark" size={48} />
+          <h3>Le cours, rendu simple</h3>
+          <p>Le point de départ est l’élève qui a peur de la matière. Chaque notion est reformulée jusqu’à devenir évidente.</p>
+        </li>
+        <li data-reveal>
+          <Glyph kind="wave" size={48} />
+          <h3>En darija, avec les mots du Bac</h3>
+          <p>Il explique en darija et en arabe, en gardant les notations et le vocabulaire scientifiques attendus à l’examen.</p>
+        </li>
+        <li data-reveal>
+          <Glyph kind="parabola" size={48} />
+          <h3><span class="ar" lang="ar">دقة دقة</span> — pas à pas</h3>
+          <p>Sa présentation du programme promet d’avancer avec l’élève « étape par étape, jusqu’à comprendre toutes les leçons ».</p>
+        </li>
+      </ol>
+      <p class="src-note mono">Citations et formulations : canaux officiels du professeur, consultés le 26/11/2026. Traductions proposées pour ce concept.</p>
+    </div>
+  </section>
+
+  <!-- 02 NIVEAUX -->
+  <section class="section paper levels" id="niveaux" aria-labelledby="lv-title">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <span class="sec-num">02 — Quatre niveaux, un même fil</span>
-        <h2>Du collège au baccalauréat.</h2>
-        <p class="muted">Niveaux annoncés sur la chaîne officielle : de la 1ère année collège à la 2ème Bac. Ce concept détaille les quatre niveaux clés.</p>
+        <span class="sec-num">02 — Matières & niveaux</span>
+        <h2 id="lv-title">Du collège au Bac.</h2>
+        <p class="muted">Physique et chimie, pour les six niveaux annoncés sur sa chaîne officielle.</p>
       </header>
-      <ul class="lvl">
-        {levels.map((l, i) => (
+      <div class="subjects" data-reveal>
+        <div class="subject"><Glyph kind="parabola" size={56} /><span class="display">Physique</span><span class="ar" lang="ar">الفيزياء</span></div>
+        <div class="subject"><Glyph kind="flask" size={56} /><span class="display">Chimie</span><span class="ar" lang="ar">الكيمياء</span></div>
+      </div>
+      <div class="cycles">
+        {[{ name: 'Collège', ar: 'الإعدادي', list: collegeLv }, { name: 'Lycée', ar: 'الثانوي التأهيلي', list: lyceeLv }].map((c) => (
+          <div class="cycle" data-reveal>
+            <h3 class="cycle__h"><span>{c.name}</span><span class="ar" lang="ar">{c.ar}</span></h3>
+            <ul class="lv">
+              {c.list.map((l) => (
+                <li>
+                  <span class="lv__code display">{l.short}</span>
+                  <span class="lv__label">{l.label}</span>
+                  <span class="lv__ar ar" lang="ar" dir="rtl">{l.ar}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 OFFRE -->
+  <section class="section offer" id="offre" aria-labelledby="offer-title">
+    <div class="wrap offer__grid">
+      <div data-reveal>
+        <span class="sec-num">03 — Le programme</span>
+        <h2 class="offer__title" id="offer-title">
+          <span class="offer__ar ar" lang="ar" dir="rtl">{programme.nameAr}</span>
+          <span class="offer__fr display">{programme.nameFr}</span>
+        </h2>
+        <p class="lead">Le programme de physique présenté par le professeur sur sa chaîne officielle. Voici ce qu’il annonce :</p>
+      </div>
+      <div class="offer__panel" data-reveal>
+        <ol class="incl">
+          {programme.includes.map((it, i) => (
+            <li>
+              <span class="incl__n display">0{i + 1}</span>
+              <span class="incl__fr">{it.fr}</span>
+              <span class="incl__ar ar" lang="ar" dir="rtl">{it.ar}</span>
+            </li>
+          ))}
+        </ol>
+        <p class="offer__note">Tarifs, dates et modalités ne sont pas publiés : le professeur les communique directement.</p>
+        <div class="offer__cta">
+          <a class="btn" href={officialLinks.instagram.dm} {...ext}>Demander les détails <span class="arr" aria-hidden="true">→</span><span class="sr-only"> (Instagram, nouvel onglet)</span></a>
+          <a class="btn ghost" href="#video">Voir la présentation</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 VIDEO -->
+  <section class="section video" id="video" aria-labelledby="video-title">
+    <div class="wrap">
+      <header class="video__head" data-reveal>
+        <span class="sec-num">04 — En vidéo</span>
+        <h2 class="display video__title" id="video-title">Il le dit <span class="hl">mieux que nous.</span></h2>
+      </header>
+      <figure class="video__fig" data-reveal>
+        <div class="video__frame">
+          <VideoFacade id={officialVideo.id} title={`${officialVideo.titleAr} — Prof Harti`} hd />
+        </div>
+        <figcaption class="video__cap">
+          <span class="ar" lang="ar" dir="rtl">{officialVideo.titleAr}</span>
+          <span>{officialVideo.title} · {officialVideo.duration}</span>
+          <span class="mono muted">Chaîne officielle {officialLinks.youtube.handle} · le lecteur YouTube se charge uniquement au clic</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- CHAINES -->
+  <section class="section channels" id="chaines" aria-labelledby="ch-title">
+    <div class="wrap">
+      <header class="sec-head" data-reveal>
+        <span class="sec-num">Où le suivre</span>
+        <h2 id="ch-title">Là où il enseigne déjà.</h2>
+      </header>
+      <ul class="ch">
+        {[
+          { ...officialLinks.instagram, note: 'Compte vérifié : reels de cours, résumés, annonces du programme.' },
+          { ...officialLinks.youtube, note: 'Chaîne officielle et présentation de l’Offre Excellence.' },
+          { ...officialLinks.facebook, note: 'Page officielle, liée depuis sa chaîne YouTube.' },
+        ].map((l) => (
           <li data-reveal>
-            <a href={withBase(`cours/?niveau=${l.id}`)}>
-              <span class="lvl__i mono">0{i + 1}</span>
-              <span class="lvl__name display">{l.label}</span>
-              <span class="lvl__ar ar" lang="ar" dir="rtl">{l.labelAr}</span>
-              <span class="lvl__line">{levelLines[l.id]}</span>
-              <span class="lvl__count mono">{countBy(l.id)} chapitres <span aria-hidden="true">→</span></span>
+            <a href={l.url} {...ext}>
+              <span class="ch__name display">{l.label}</span>
+              <span class="ch__handle mono">{l.handle}</span>
+              <span class="ch__note">{l.note}</span>
+              <span class="ch__go" aria-hidden="true">↗</span>
+              <span class="sr-only">(nouvel onglet)</span>
             </a>
           </li>
         ))}
@@ -114,193 +206,229 @@ const levelLines: Record<string, string> = {
     </div>
   </section>
 
-  <!-- 03 — Laboratoire -->
-  <section class="section bordeaux lab-teaser">
-    <div class="wrap lab-teaser__grid">
-      <div data-reveal>
-        <span class="sec-num">03 — Laboratoire interactif</span>
-        <h2 class="display lab-teaser__title">Lance. Observe. <br /><span class="hl">Comprends.</span></h2>
-        <p class="lead">Le mouvement d’un projectile, en direct : choisis la vitesse, l’angle, la gravité (Terre ou Lune) et regarde les composantes du vecteur vitesse évoluer à chaque instant.</p>
-        <a class="btn" href={withBase('laboratoire/')}>Ouvrir le laboratoire <span class="arr" aria-hidden="true">→</span></a>
-      </div>
-      <figure class="lab-teaser__fig" data-reveal>
-        <svg viewBox="0 0 520 300" role="img" aria-label="Schéma : trajectoire parabolique d’un projectile avec vecteurs vitesse">
-          <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" /></marker></defs>
-          <g stroke="rgba(237,230,218,.18)" stroke-width="1">{Array.from({ length: 11 }, (_, i) => <line x1={30 + i * 46} y1="20" x2={30 + i * 46} y2="262" />)}</g>
-          <line x1="20" y1="262" x2="510" y2="262" stroke="var(--chalk)" stroke-width="1.5" />
-          <path class="lt-path" d="M30 262 Q 260 -40 490 262" fill="none" stroke="var(--signal)" stroke-width="3" />
-          <g color="var(--chalk)"><line x1="30" y1="262" x2="100" y2="182" stroke="currentColor" stroke-width="2.5" marker-end="url(#ah)" /></g>
-          <g color="var(--signal)"><line x1="260" y1="111" x2="350" y2="111" stroke="currentColor" stroke-width="2.5" marker-end="url(#ah)" /></g>
-          <circle cx="260" cy="111" r="7" fill="var(--chalk)" />
-          <text x="270" y="98" fill="var(--chalk)" font-family="var(--f-mono)" font-size="13">v = v₀ cos α</text>
-          <text x="110" y="196" fill="var(--chalk)" font-family="var(--f-mono)" font-size="13">v₀</text>
-          <line x1="260" y1="111" x2="260" y2="262" stroke="var(--chalk)" stroke-dasharray="4 5" opacity=".6" />
-          <text x="268" y="200" fill="var(--chalk)" font-family="var(--f-mono)" font-size="13">H</text>
-          <text x="236" y="286" fill="var(--chalk)" font-family="var(--f-mono)" font-size="13">R = v₀² sin 2α / g</text>
-        </svg>
-      </figure>
-    </div>
-  </section>
-
-  <!-- 04 — BAC -->
-  <section class="section bac-teaser">
-    <div class="wrap bac-teaser__grid">
+  <!-- 05 INSCRIPTION -->
+  <section class="section paper steps-sec" id="inscription" aria-labelledby="ins-title">
+    <div class="wrap">
       <header class="sec-head" data-reveal>
-        <span class="sec-num">04 — Préparation aux examens</span>
-        <h2>Une question. <span class="hl">Tout de suite.</span></h2>
-        <p class="muted">Question originale de démonstration, style examen national (2ème Bac). Réponds : l’explication s’affiche immédiatement.</p>
-        <a class="link-arrow" href={withBase('examens/')}>18 questions, 5 thèmes, check-lists → </a>
+        <span class="sec-num">05 — Comment s’inscrire</span>
+        <h2 id="ins-title">Trois étapes. <span class="steps-sec__hl">Zéro stress.</span></h2>
+        <p class="muted">Parcours basé sur les annonces publiques du professeur : l’inscription se fait par message, directement avec lui.</p>
       </header>
-      <form class="mini-q" data-mini-q data-answer={teaserQ.answer} data-reveal>
-        <fieldset>
-          <legend>{teaserQ.q}</legend>
-          <div class="mini-q__opts">
-            {teaserQ.options.map((o, i) => (
-              <label><input type="radio" name="mq" value={i} /> <span class="mini-q__letter mono">{String.fromCharCode(65 + i)}</span> <span>{o}</span></label>
-            ))}
-          </div>
-        </fieldset>
-        <p class="mini-q__out" data-out aria-live="polite"></p>
-        <p class="mini-q__why" data-why hidden>{teaserQ.why}</p>
-      </form>
+      <ol class="steps">
+        <li data-reveal>
+          <span class="steps__n display">1</span>
+          <h3>Envoie-lui un message</h3>
+          <p>En message privé sur Instagram. Dans sa présentation, il demande simplement un message contenant le mot <span class="ar" lang="ar">« عرض »</span>.</p>
+        </li>
+        <li data-reveal>
+          <span class="steps__n display">2</span>
+          <h3>Reçois les détails</h3>
+          <p>Indique ton niveau. Contenu, organisation et tarif te sont communiqués directement par le professeur.</p>
+        </li>
+        <li data-reveal>
+          <span class="steps__n display">3</span>
+          <h3>Avance étape par étape</h3>
+          <p>Cours expliqués paragraphe par paragraphe, exercices variés, méthode pour les examens nationaux.</p>
+        </li>
+      </ol>
     </div>
   </section>
 
-  <!-- 05 — Professeur -->
-  <section class="section paper prof-teaser">
-    <div class="wrap prof-teaser__grid">
-      <div data-reveal>
-        <span class="sec-num">05 — Le professeur</span>
-        <h2 class="display prof-teaser__title">Ayoub Harti.<br /><span class="prof-teaser__ar ar" lang="ar" dir="rtl">{identity.nameAr}</span></h2>
-        <p class="lead">Professeur de physique-chimie et créateur de contenus éducatifs au Maroc. Il s’adresse aux élèves en darija et en arabe, avec un fil rouge assumé sur sa chaîne : des cours simplifiés et une explication claire.</p>
-        <a class="btn ghost" href={withBase('professeur/')}>Découvrir le professeur <span class="arr" aria-hidden="true">→</span></a>
+  <!-- 06 CONTACT -->
+  <section class="section contact" id="contact" aria-labelledby="ct-title">
+    <div class="wrap">
+      <header class="contact__head" data-reveal>
+        <span class="sec-num">06 — Contact</span>
+        <h2 class="display contact__title" id="ct-title">Une question ?<br /><span class="hl">Écris-lui.</span></h2>
+        <p class="ar contact__ar" lang="ar" dir="rtl">تواصل مع الأستاذ مباشرة</p>
+      </header>
+      <div class="cbtns" data-reveal>
+        <a class="cbtn cbtn--primary" href={officialLinks.instagram.dm} {...ext}>
+          <span class="cbtn__k mono">Message privé · recommandé</span>
+          <span class="cbtn__l display">Instagram</span>
+          <span class="cbtn__h mono">{officialLinks.instagram.handle}</span>
+          <span class="cbtn__go" aria-hidden="true">→</span>
+          <span class="sr-only">(nouvel onglet)</span>
+        </a>
+        {wa && (
+          <a class="cbtn" href={wa} {...ext} data-whatsapp>
+            <span class="cbtn__k mono">Message</span>
+            <span class="cbtn__l display">WhatsApp</span>
+            <span class="cbtn__go" aria-hidden="true">→</span>
+            <span class="sr-only">(nouvel onglet)</span>
+          </a>
+        )}
+        <a class="cbtn" href={officialLinks.youtube.url} {...ext}>
+          <span class="cbtn__k mono">Vidéos</span>
+          <span class="cbtn__l display">YouTube</span>
+          <span class="cbtn__h mono">{officialLinks.youtube.handle}</span>
+          <span class="cbtn__go" aria-hidden="true">↗</span>
+          <span class="sr-only">(nouvel onglet)</span>
+        </a>
+        <a class="cbtn" href={officialLinks.facebook.url} {...ext}>
+          <span class="cbtn__k mono">Page</span>
+          <span class="cbtn__l display">Facebook</span>
+          <span class="cbtn__h mono">{officialLinks.facebook.handle}</span>
+          <span class="cbtn__go" aria-hidden="true">↗</span>
+          <span class="sr-only">(nouvel onglet)</span>
+        </a>
       </div>
-      <dl class="facts" data-reveal>
-        <div><dt>Matière</dt><dd>Physique-Chimie</dd></div>
-        <div><dt>Niveaux</dt><dd>1ère année collège → 2ème Bac</dd></div>
-        <div><dt>Langues</dt><dd>Darija, arabe · vocabulaire scientifique français</dd></div>
-        <div><dt>Programme</dt><dd><span class="ar" lang="ar" dir="rtl">عرض التفوق</span> — Offre Excellence</dd></div>
-        <div><dt>Sources</dt><dd>Chaîne YouTube @ProfHarti, Instagram @prof_harti (consultés le 26/11/2026)</dd></div>
-      </dl>
+      <p class="contact__note muted">Ce site est un concept non officiel : il ne collecte aucune donnée et ne transmet aucun message. Tous les boutons ouvrent les canaux officiels du professeur.</p>
     </div>
   </section>
-
-  <Channels />
 </Base>
 
 <style>
+  /* HERO */
   .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
-  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(60% 70% at 78% 35%, rgba(107, 26, 43, 0.55), transparent 70%), radial-gradient(30% 40% at 80% 20%, rgba(247, 197, 30, 0.08), transparent 70%); pointer-events: none; }
-  .hero__grid { position: relative; display: grid; gap: 2.5rem; padding-block: clamp(2rem, 6vw, 5rem) clamp(2.5rem, 5vw, 4rem); }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(60% 70% at 78% 35%, rgba(107, 26, 43, 0.6), transparent 70%), radial-gradient(30% 40% at 82% 18%, rgba(247, 197, 30, 0.09), transparent 70%); pointer-events: none; }
+  .hero__grid { position: relative; display: grid; gap: 2.5rem; padding-block: clamp(2rem, 6vw, 5rem) clamp(3rem, 6vw, 5rem); }
   @media (min-width: 1000px) { .hero__grid { grid-template-columns: 1.15fr 0.85fr; align-items: center; gap: 3rem; } }
   .hero__kicker { margin-bottom: 1.2rem; }
-  .hero__title { font-size: var(--fs-mega); margin: 0; }
-  @media (max-width: 999px) { .hero__title { font-size: min(14.6vw, 6.5rem); } }
+  .hero__title { font-size: min(14.6vw, 6.5rem); margin: 0; }
   @media (min-width: 1000px) { .hero__title { font-size: min(7.4vw, 7.6rem); } .hero__l1 { white-space: nowrap; } }
   .hero__l1, .hero__l2 { display: block; }
   .hero__l2 { margin-top: 0.04em; }
-  .hero__peur { position: relative; color: var(--ink); background: var(--signal); padding: 0 0.08em; display: inline-block; transform: rotate(-1.6deg); }
+  .hero__peur { position: relative; display: inline-block; transform: rotate(-1.6deg); color: var(--ink); padding: 0 0.08em; }
+  .hero__peur::before { content: ''; position: absolute; inset: 0; background: var(--signal); z-index: 0; transform-origin: left; }
+  .hero__peur span { position: relative; z-index: 1; }
   .hero__ar { font-size: clamp(1.15rem, 2.2vw, 1.6rem); color: var(--gold); margin: 1.2rem 0 1rem; font-weight: 600; }
   .hero__lead { color: var(--chalk-dim); }
   .hero__cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+  .hero__cta .ar { font-size: 1rem; text-transform: none; }
   .hero__fine { font-size: 0.68rem; color: #8f8578; margin-top: 1.25rem; letter-spacing: 0.04em; }
-
-  .stage { position: relative; aspect-ratio: 4 / 4.6; max-width: 520px; margin-inline: auto; width: 100%; }
-  .stage__word { position: absolute; right: -0.06em; top: -0.05em; font-size: clamp(6rem, 22vw, 12rem); writing-mode: vertical-rl; color: transparent; -webkit-text-stroke: 1.5px rgba(237, 230, 218, 0.2); line-height: 0.8; pointer-events: none; }
-  .stage__orbits { position: absolute; left: -8%; top: -6%; width: 88%; fill: none; stroke: rgba(200, 160, 99, 0.45); stroke-width: 1.2; z-index: 1; pointer-events: none; }
-  .stage__e { fill: var(--signal); stroke: none; }
-  :global(.stage__portrait) { position: absolute; left: 0; top: 0; width: 72%; height: 78%; }
-  .stage__video { z-index: 2; position: absolute; right: 0; bottom: 0; width: 76%; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8); border: 1px solid var(--line-strong); background: var(--ink); }
-  .stage__cap { margin: 0; padding: 0.6rem 0.75rem; font-size: 0.8rem; color: var(--chalk-dim); background: var(--ink-2); }
-  .stage__cap .ar { color: var(--signal); }
-  @media (prefers-reduced-motion: reduce) { .stage__e { display: none; } }
-
-  .levelbar { position: relative; border-top: 1px solid var(--line); background: var(--ink-2); }
-  .levelbar__in { display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
-  .levelbar__in .kicker { display: flex; align-items: center; padding-inline-end: 1.25rem; white-space: nowrap; }
-  .levelbar a { flex: 1 0 auto; display: flex; flex-direction: column; gap: 0.1rem; padding: 0.9rem 1.25rem; border-inline-start: 1px solid var(--line); text-decoration: none; min-width: 140px; }
-  .levelbar a span:first-child { font-weight: 800; font-stretch: 80%; text-transform: uppercase; font-size: 1.05rem; }
-  .levelbar a .ar { font-size: 0.82rem; color: var(--chalk-dim); line-height: 1.4; }
-  .levelbar a:hover { background: var(--signal); color: var(--ink); }
-  .levelbar a:hover .ar { color: var(--ink); }
-  @media (max-width: 640px) { .levelbar__in .kicker { display: none; } .levelbar__in { padding-inline: 0; } }
-
-  .steps { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
-  .steps li { display: grid; grid-template-columns: auto 1fr; gap: 1rem 2rem; padding-block: 1.75rem; border-bottom: 1px solid var(--line); align-items: start; }
-  .steps li :global(.glyph) { display: none; color: var(--chalk-dim); }
-  @media (min-width: 760px) { .steps li { grid-template-columns: 8rem 1fr 4rem; align-items: center; } .steps li :global(.glyph) { display: block; } }
-  .steps__n { font-size: clamp(3.5rem, 8vw, 6rem); color: var(--signal); line-height: 0.8; }
-  .steps h3 { font-size: var(--fs-h3); font-stretch: 85%; text-transform: uppercase; margin-bottom: 0.4rem; }
-  .steps p { margin: 0; color: var(--chalk-dim); max-width: 58ch; }
-
-  .lvl { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--paper-ink); }
-  .lvl a { display: grid; grid-template-columns: 2.5rem 1fr auto; grid-template-areas: 'i name ar' 'i line line' 'i count count'; gap: 0.2rem 1rem; padding: 1.3rem 0.5rem; border-bottom: 1px solid rgba(26, 20, 18, 0.2); text-decoration: none; transition: background 0.25s, padding 0.3s var(--ease); }
-  @media (min-width: 900px) { .lvl a { grid-template-columns: 3rem minmax(14rem, 0.9fr) 1.4fr auto auto; grid-template-areas: 'i name line ar count'; align-items: center; padding: 1.6rem 0.75rem; } }
-  .lvl a:hover { background: var(--paper-ink); color: var(--paper); padding-inline-start: 1.5rem; }
-  .lvl a:hover .lvl__count, .lvl a:hover .lvl__ar { color: var(--signal); }
-  .lvl__i { grid-area: i; color: var(--bordeaux); font-size: 0.8rem; padding-top: 0.4rem; }
-  .lvl a:hover .lvl__i { color: var(--signal); }
-  .lvl__name { grid-area: name; font-size: clamp(2rem, 4.5vw, 3.4rem); }
-  .lvl__ar { grid-area: ar; color: var(--bordeaux); font-size: 1rem; }
-  .lvl__line { grid-area: line; color: inherit; opacity: 0.85; }
-  .lvl__count { grid-area: count; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--paper-muted); white-space: nowrap; }
-
-  .lab-teaser { background: radial-gradient(80% 90% at 100% 0%, #7d2235 0%, var(--bordeaux) 55%, var(--bordeaux-2) 100%); }
-  .lab-teaser__grid { display: grid; gap: 2.5rem; align-items: center; }
-  @media (min-width: 960px) { .lab-teaser__grid { grid-template-columns: 0.9fr 1.1fr; } }
-  .lab-teaser__title { font-size: var(--fs-h1); margin: 0.8rem 0 1.2rem; }
-  .lab-teaser .lead { margin-bottom: 1.75rem; color: #f0e3dd; }
-  .lab-teaser__fig { margin: 0; background: rgba(14, 11, 10, 0.35); border: 1px solid rgba(237, 230, 218, 0.2); padding: 1rem; }
   @media (prefers-reduced-motion: no-preference) {
-    .lt-path { stroke-dasharray: 700; stroke-dashoffset: 700; }
-    .lab-teaser__fig.in .lt-path { animation: draw 1.8s var(--ease) 0.2s forwards; }
-    @keyframes draw { to { stroke-dashoffset: 0; } }
+    .hero__l1, .hero__l2, .hero__ar, .hero__lead, .hero__cta { animation: rise 0.9s var(--ease) both; }
+    .hero__l2 { animation-delay: 0.08s; } .hero__ar { animation-delay: 0.2s; } .hero__lead { animation-delay: 0.28s; } .hero__cta { animation-delay: 0.36s; }
+    .hero__peur::before { animation: sweep 0.7s var(--ease) 0.55s both; }
+    .stage { animation: rise 1.1s var(--ease) 0.15s both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+    @keyframes sweep { from { transform: scaleX(0); } to { transform: scaleX(1); } }
   }
 
-  .bac-teaser__grid { display: grid; gap: 2rem; }
-  @media (min-width: 960px) { .bac-teaser__grid { grid-template-columns: 0.85fr 1.15fr; align-items: start; } }
-  .mini-q { border: 1px solid var(--line-strong); padding: clamp(1.25rem, 3vw, 2rem); background: var(--ink-2); }
-  .mini-q fieldset { border: 0; padding: 0; margin: 0; }
-  .mini-q legend { font-size: clamp(1.1rem, 1.8vw, 1.35rem); font-weight: 650; line-height: 1.4; margin-bottom: 1.25rem; padding: 0; }
-  .mini-q__opts { display: grid; gap: 0.6rem; }
-  @media (min-width: 560px) { .mini-q__opts { grid-template-columns: 1fr 1fr; } }
-  .mini-q label { display: flex; align-items: center; gap: 0.75rem; min-height: 56px; padding: 0.6rem 0.9rem; border: 1px solid var(--line-strong); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
-  .mini-q label:hover { border-color: var(--signal); }
-  .mini-q input { accent-color: var(--signal); width: 1.1rem; height: 1.1rem; }
-  .mini-q__letter { color: var(--signal); font-weight: 700; }
-  .mini-q label.is-right { border-color: var(--ok); background: rgba(124, 207, 138, 0.1); }
-  .mini-q label.is-wrong { border-color: var(--bad); background: rgba(255, 138, 122, 0.08); }
-  .mini-q__out { font-weight: 750; margin: 1.25rem 0 0.3rem; min-height: 1.6em; }
-  .mini-q__why { color: var(--chalk-dim); margin: 0; font-family: var(--f-mono); font-size: 0.92rem; }
+  .stage { position: relative; aspect-ratio: 4 / 4.7; max-width: 520px; margin-inline: auto; width: 100%; }
+  .stage__word { position: absolute; right: -0.06em; top: -0.05em; font-size: clamp(6rem, 22vw, 12rem); writing-mode: vertical-rl; color: transparent; -webkit-text-stroke: 1.5px rgba(237, 230, 218, 0.18); line-height: 0.8; pointer-events: none; }
+  .stage__orbits { position: absolute; left: -6%; top: -4%; width: 92%; fill: none; stroke: rgba(200, 160, 99, 0.45); stroke-width: 1.2; z-index: 1; pointer-events: none; }
+  .stage__e { fill: var(--signal); }
+  @media (prefers-reduced-motion: reduce) { .stage__e { display: none; } }
+  :global(.stage__portrait) { position: absolute; left: 0; top: 0; width: 82%; height: 90%; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.9); }
+  .idcard { position: absolute; right: 0; bottom: 0; z-index: 2; width: min(62%, 300px); background: var(--ink); border: 1px solid var(--line-strong); border-top: 4px solid var(--signal); padding: 1rem 1.1rem 1.1rem; display: grid; gap: 0.2rem; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.85); }
+  .idcard__ar { margin: 0; color: var(--gold); font-size: 1.15rem; font-weight: 700; line-height: 1.5; }
+  .idcard__name { margin: 0; font-size: clamp(2rem, 5vw, 2.8rem); }
+  .idcard__meta { margin: 0.2rem 0 0; display: flex; gap: 0.5rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--chalk-dim); }
+  .idcard__handle { justify-self: start; margin-top: 0.4rem; color: var(--signal); font-size: 0.85rem; text-decoration: none; padding: 0.3rem 0; border-bottom: 1px solid currentColor; }
 
-  .prof-teaser__grid { display: grid; gap: 3rem; }
-  @media (min-width: 960px) { .prof-teaser__grid { grid-template-columns: 1.1fr 0.9fr; align-items: end; } }
-  .prof-teaser__title { font-size: var(--fs-h1); margin: 0.8rem 0 1.25rem; }
-  .prof-teaser__ar { display: inline-block; font-size: 0.42em; color: var(--bordeaux); text-transform: none; margin-top: 0.4rem; font-weight: 700; }
-  .prof-teaser .lead { color: var(--paper-ink); margin-bottom: 1.75rem; }
-  .facts { margin: 0; border-top: 2px solid var(--paper-ink); }
-  .facts div { display: grid; grid-template-columns: 7.5rem 1fr; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid rgba(26, 20, 18, 0.18); }
-  .facts dt { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--paper-muted); padding-top: 0.2rem; }
-  .facts dd { margin: 0; font-weight: 600; }
+  .band { position: relative; border-top: 1px solid var(--line); background: var(--signal); color: var(--ink); overflow: hidden; }
+  .band__in { display: flex; width: max-content; padding-block: 0.8rem; }
+  .band__seq { display: flex; align-items: center; gap: 1.4rem; padding-inline-end: 1.4rem; font-family: var(--f-display); font-stretch: 70%; font-weight: 850; text-transform: uppercase; font-size: clamp(1.2rem, 2.4vw, 1.8rem); white-space: nowrap; line-height: 1; }
+  .band__seq .ar { font-family: var(--f-ar); font-weight: 700; font-size: 0.85em; }
+  .band__seq i { font-style: normal; color: var(--bordeaux); font-size: 0.7em; }
+  @media (prefers-reduced-motion: no-preference) { .band__in { animation: marquee 38s linear infinite; } @keyframes marquee { to { transform: translateX(-50%); } } }
+
+  /* PROF */
+  .prof__title { font-size: var(--fs-h1); margin: 1rem 0 3rem; }
+  .prof__grid { display: grid; gap: 1.5rem; }
+  @media (min-width: 900px) { .prof__grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; } }
+  .quote { margin: 0; padding: clamp(1.5rem, 3vw, 2.25rem); border: 1px solid var(--line-strong); background: linear-gradient(160deg, var(--ink-2), var(--ink)); position: relative; }
+  .quote::before { content: '«'; position: absolute; top: -0.2em; left: 0.3em; font-family: var(--f-display); font-size: 5rem; color: var(--signal); line-height: 1; }
+  .quote__ar { padding-top: 1.2rem; font-size: clamp(1.6rem, 3.4vw, 2.5rem); font-weight: 700; color: var(--chalk); margin: 0.5rem 0 0.75rem; line-height: 1.5; }
+  .quote__fr { font-size: var(--fs-lead); color: var(--signal); margin: 0 0 1rem; }
+  .quote footer { font-size: 0.72rem; letter-spacing: 0.06em; color: var(--chalk-dim); }
+  .principles { list-style: none; padding: 0; margin: clamp(3rem, 6vw, 4.5rem) 0 0; display: grid; gap: 0; border-top: 1px solid var(--line-strong); }
+  @media (min-width: 900px) { .principles { grid-template-columns: repeat(3, 1fr); } }
+  .principles li { padding: 1.75rem 0; border-bottom: 1px solid var(--line-strong); display: grid; gap: 0.6rem; align-content: start; }
+  @media (min-width: 900px) { .principles li { padding: 2rem 2rem 2rem 0; border-bottom: 0; } .principles li + li { padding-inline-start: 2rem; border-inline-start: 1px solid var(--line-strong); } }
+  .principles :global(.glyph) { color: var(--signal); }
+  .principles h3 { font-size: var(--fs-h3); font-stretch: 82%; text-transform: uppercase; }
+  .principles h3 .ar { text-transform: none; color: var(--gold); }
+  .principles p { color: var(--chalk-dim); margin: 0; }
+  .src-note { font-size: 0.7rem; color: #8f8578; margin-top: 2rem; letter-spacing: 0.04em; }
+
+  /* LEVELS */
+  .subjects { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1px; background: var(--paper-ink); border: 1px solid var(--paper-ink); margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+  .subject { background: var(--paper); display: grid; justify-items: start; gap: 0.3rem; padding: clamp(1.25rem, 3vw, 2rem); }
+  .subject :global(.glyph) { color: var(--bordeaux); }
+  .subject .display { font-size: clamp(1.7rem, 8.5vw, 4.5rem); }
+  .subject .ar { color: var(--bordeaux); font-size: 1.1rem; }
+  .cycles { display: grid; gap: 3rem; }
+  @media (min-width: 900px) { .cycles { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+  .cycle__h { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.8rem; font-family: var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--paper-muted); font-weight: 500; padding-bottom: 0.8rem; border-bottom: 2px solid var(--paper-ink); }
+  .cycle__h .ar { letter-spacing: 0; text-transform: none; font-size: 1rem; color: var(--bordeaux); }
+  .lv { list-style: none; padding: 0; margin: 0; }
+  .lv li { display: grid; grid-template-columns: 6.5rem 1fr auto; align-items: center; gap: 1rem; padding: 1rem 0.25rem; border-bottom: 1px solid rgba(26, 20, 18, 0.18); transition: background 0.25s, padding 0.3s var(--ease); }
+  .lv li:hover { background: var(--paper-ink); color: var(--paper); padding-inline: 1rem; }
+  .lv li:hover .lv__code { color: var(--signal); }
+  .lv__code { font-size: clamp(2rem, 4.2vw, 3rem); color: var(--bordeaux); }
+  .lv__label { font-weight: 650; }
+  .lv__ar { color: inherit; opacity: 0.75; }
+  @media (max-width: 420px) { .lv li { grid-template-columns: 4.6rem 1fr; } .lv__ar { grid-column: 2; } }
+
+  /* OFFER */
+  .offer { background: radial-gradient(80% 90% at 100% 0%, #82243a 0%, var(--bordeaux) 50%, #2c0a12 100%); overflow: hidden; }
+  .offer__grid { display: grid; gap: 3rem; }
+  @media (min-width: 1000px) { .offer__grid { grid-template-columns: 1fr 1fr; align-items: end; gap: 4rem; } }
+  .offer .sec-num { color: var(--signal); }
+  .offer__title { margin: 1rem 0 1.5rem; display: grid; gap: 0.2rem; }
+  .offer__ar { justify-self: start; font-size: clamp(3.4rem, 11vw, 7.5rem); line-height: 1.15; color: var(--signal); font-weight: 800; }
+  .offer__fr { font-size: clamp(2rem, 5vw, 3.6rem); }
+  .offer .lead { color: #f0e3dd; }
+  .offer__panel { background: rgba(14, 11, 10, 0.5); border: 1px solid rgba(237, 230, 218, 0.22); padding: clamp(1.5rem, 3vw, 2.25rem); }
+  .incl { list-style: none; padding: 0; margin: 0 0 1.5rem; }
+  .incl li { display: grid; grid-template-columns: 3.5rem 1fr; gap: 0.1rem 1rem; padding: 1.1rem 0; border-bottom: 1px solid rgba(237, 230, 218, 0.18); }
+  .incl__n { grid-row: span 2; font-size: 2.4rem; color: var(--signal); line-height: 0.9; }
+  .incl__fr { font-size: 1.15rem; font-weight: 700; }
+  .incl__ar { color: var(--gold); font-size: 0.95rem; text-align: start; }
+  .offer__note { font-size: var(--fs-small); color: #e5d6cf; border-inline-start: 3px solid var(--signal); padding-inline-start: 0.9rem; }
+  .offer__cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+
+  /* VIDEO */
+  .video__title { font-size: var(--fs-h1); margin: 1rem 0 2.5rem; }
+  .video__fig { margin: 0; }
+  .video__frame { position: relative; border: 1px solid var(--line-strong); box-shadow: 0 50px 100px -40px rgba(107, 26, 43, 0.8); }
+  .video__frame::before { content: ''; position: absolute; inset: -14px 14px 14px -14px; border: 1px solid var(--signal); z-index: -1; }
+  .video__cap { display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; align-items: baseline; margin-top: 1.25rem; }
+  .video__cap .ar { color: var(--signal); font-size: 1.2rem; font-weight: 700; }
+  .video__cap .mono { font-size: 0.72rem; }
+
+  /* CHANNELS */
+  .ch { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line-strong); }
+  .ch a { display: grid; grid-template-columns: 1fr auto; grid-template-areas: 'name go' 'handle go' 'note note'; gap: 0.15rem 1rem; padding: 1.4rem 0; border-bottom: 1px solid var(--line-strong); text-decoration: none; }
+  @media (min-width: 900px) { .ch a { grid-template-columns: minmax(16rem, 0.8fr) 12rem 1fr auto; grid-template-areas: 'name handle note go'; align-items: center; } }
+  .ch__name { grid-area: name; font-size: clamp(2.4rem, 6vw, 4.8rem); transition: color 0.2s; }
+  .ch__handle { grid-area: handle; color: var(--signal); font-size: 0.85rem; }
+  .ch__note { grid-area: note; color: var(--chalk-dim); }
+  .ch__go { grid-area: go; font-size: 2rem; color: var(--chalk-dim); transition: transform 0.3s var(--ease), color 0.2s; }
+  .ch a:hover .ch__name { color: var(--signal); }
+  .ch a:hover .ch__go { transform: translate(4px, -4px); color: var(--signal); }
+
+  /* STEPS */
+  .steps-sec__hl { color: var(--bordeaux); }
+  .steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; border-top: 2px solid var(--paper-ink); }
+  @media (min-width: 900px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+  .steps li { padding: 1.75rem 0; border-bottom: 1px solid rgba(26, 20, 18, 0.2); display: grid; gap: 0.5rem; align-content: start; }
+  @media (min-width: 900px) { .steps li { padding: 2rem 2rem 2rem 0; border-bottom: 0; } .steps li + li { padding-inline-start: 2rem; border-inline-start: 1px solid rgba(26, 20, 18, 0.2); } }
+  .steps__n { font-size: clamp(4.5rem, 9vw, 7rem); color: transparent; -webkit-text-stroke: 2px var(--bordeaux); line-height: 0.8; margin-bottom: 0.5rem; }
+  .steps h3 { font-size: var(--fs-h3); font-stretch: 82%; text-transform: uppercase; }
+  .steps p { margin: 0; color: var(--paper-muted); }
+  .steps .ar { color: var(--bordeaux); font-weight: 700; }
+
+  /* CONTACT */
+  .contact { background: radial-gradient(70% 60% at 0% 100%, rgba(107, 26, 43, 0.55), transparent 70%), var(--ink); }
+  .contact__title { font-size: var(--fs-mega); margin: 1rem 0 0.5rem; }
+  .contact__ar { color: var(--gold); font-size: clamp(1.15rem, 2vw, 1.5rem); margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+  .cbtns { display: grid; gap: 1rem; }
+  @media (min-width: 760px) { .cbtns { grid-template-columns: 1fr 1fr; } .cbtn--primary { grid-column: 1 / -1; } }
+  @media (min-width: 1100px) { .cbtns { grid-template-columns: 1.4fr 1fr 1fr; } .cbtn--primary { grid-column: auto; grid-row: span 1; } }
+  .cbtn { position: relative; display: grid; gap: 0.2rem; align-content: end; min-height: 150px; padding: 1.25rem 1.4rem; border: 1px solid var(--line-strong); text-decoration: none; transition: border-color 0.2s, transform 0.3s var(--ease), background 0.2s; }
+  .cbtn:hover { border-color: var(--signal); transform: translateY(-3px); }
+  .cbtn__k { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--chalk-dim); }
+  .cbtn__l { font-size: clamp(2.2rem, 5vw, 3.4rem); }
+  .cbtn__h { font-size: 0.85rem; color: var(--signal); }
+  .cbtn__go { position: absolute; top: 1rem; right: 1.2rem; font-size: 1.8rem; transition: transform 0.3s var(--ease); }
+  .cbtn:hover .cbtn__go { transform: translate(4px, -2px); }
+  .cbtn--primary { background: var(--signal); color: var(--ink); border-color: var(--signal); min-height: 190px; }
+  .cbtn--primary .cbtn__k, .cbtn--primary .cbtn__h { color: #3b2f12; }
+  .cbtn--primary .cbtn__l { font-size: clamp(2.8rem, 7vw, 4.8rem); }
+  .cbtn--primary:hover { background: #ffd23a; }
+  .contact__note { font-size: var(--fs-small); margin-top: 1.5rem; max-width: 60ch; }
 </style>
-
-<script>
-  const form = document.querySelector<HTMLFormElement>('[data-mini-q]');
-  if (form) {
-    const answer = Number(form.dataset.answer);
-    const out = form.querySelector<HTMLElement>('[data-out]')!;
-    const why = form.querySelector<HTMLElement>('[data-why]')!;
-    form.addEventListener('change', (e) => {
-      const t = e.target as HTMLInputElement;
-      if (t.name !== 'mq') return;
-      const v = Number(t.value);
-      form.querySelectorAll('label').forEach((l, i) => {
-        l.classList.toggle('is-right', i === answer);
-        l.classList.toggle('is-wrong', i === v && v !== answer);
-      });
-      out.textContent = v === answer ? 'Bonne réponse ✓' : 'Pas tout à fait — la bonne réponse est surlignée.';
-      why.hidden = false;
-    });
-    form.addEventListener('submit', (e) => e.preventDefault());
-  }
-</script>
