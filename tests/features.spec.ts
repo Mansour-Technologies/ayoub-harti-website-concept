@@ -85,11 +85,14 @@ test.describe('Préparation aux examens', () => {
     await page.locator('[data-diff] button', { hasText: 'Facile' }).click();
     await expect(page.locator('[data-avail]')).toContainText('1 question');
     await page.locator('[data-start]').click();
+    await expect(page.locator('[data-next]')).toBeHidden();
     await expect(page.locator('[data-legend]')).toContainText('λ = 0,50 m');
     await page.locator('.opt', { hasText: '10 m/s' }).click();
     await page.locator('[data-check]').click();
     await expect(page.locator('[data-fb]')).toContainText('Bonne réponse');
     await expect(page.locator('[data-fb]')).toContainText('v = λ · f');
+    await expect(page.locator('[data-check]')).toBeHidden();
+    await expect(page.locator('[data-next]')).toBeVisible();
     await page.locator('[data-next]').click();
     await expect(page.locator('[data-sum-score]')).toHaveText('1/1');
     await expect(page.locator('[data-results]')).toContainText('1/1');
