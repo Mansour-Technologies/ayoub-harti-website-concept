@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
 const NOTICE = 'Concept de site internet proposé par Mansour Technologies — Démonstration non officielle.';
-const ALLOWED_HOSTS = ['www.instagram.com', 'ig.me', 'www.youtube.com', 'www.facebook.com', 'mansourtechnologies.com', 'wa.me'];
+const ALLOWED_HOSTS = ['www.instagram.com', 'm.me', 'www.youtube.com', 'www.facebook.com', 'mansourtechnologies.com', 'wa.me'];
 const VIDEO = 'bQRpHAGhIXw';
 const SECTIONS = ['prof', 'sbora', 'lives', 'offre', 'inscription', 'contact'];
 
@@ -91,7 +91,13 @@ test('every external link is https, verified domain, new tab, rel noopener @mobi
     expect(l.rel, l.href).toContain('noopener');
   }
   const contact = page.locator('#contact');
-  await expect(contact.locator('.cbtn').first()).toHaveAttribute('href', 'https://ig.me/m/prof_harti');
+  // Facebook (Messenger) is the primary contact, YouTube next; Instagram is only a secondary link
+  await expect(contact.locator('.cbtn').first()).toHaveAttribute('href', 'https://m.me/Prof.harti');
+  await expect(contact.locator('.cbtn').nth(1)).toHaveAttribute('href', 'https://www.youtube.com/@ProfHarti');
+  await expect(contact.locator('.cbtn[href*="instagram"], .cbtn[href*="ig.me"]')).toHaveCount(0);
+  await expect(contact.locator('.also a[href="https://www.instagram.com/prof_harti/"]')).toHaveCount(1);
+  await expect(page.locator('.hero .btn').first()).toHaveAttribute('href', 'https://m.me/Prof.harti');
+  expect(await page.locator('a[href*="ig.me"]').count()).toBe(0);
   await expect(contact.locator('a[href="https://www.youtube.com/@ProfHarti"]')).toHaveCount(1);
   await expect(contact.locator('a[href="https://www.facebook.com/Prof.harti"]')).toHaveCount(1);
   // WhatsApp is absent while src/data/site.ts contact.whatsapp is null; no phone number anywhere in the page

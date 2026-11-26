@@ -83,10 +83,14 @@ export const reels = [
   { code: 'DfxRHKFBlsc', titleAr: 'Nucléaire 2', title: 'Au tableau : désintégrations α, β⁻, β⁺, γ', chapter: 'Nucléaire 2' },
 ] as const;
 
+/**
+ * Order = priority. Facebook (page linked from his YouTube channel; m.me resolves to the page's Messenger, checked 2026-11-26)
+ * and YouTube are the primary channels; Instagram is kept as a secondary link.
+ */
 export const officialLinks = {
-  instagram: { label: 'Instagram', handle: '@prof_harti', url: 'https://www.instagram.com/prof_harti/', dm: 'https://ig.me/m/prof_harti' },
+  facebook: { label: 'Facebook', handle: 'Prof.harti', url: 'https://www.facebook.com/Prof.harti', dm: 'https://m.me/Prof.harti' },
   youtube: { label: 'YouTube', handle: '@ProfHarti', url: 'https://www.youtube.com/@ProfHarti' },
-  facebook: { label: 'Facebook', handle: 'Prof.harti', url: 'https://www.facebook.com/Prof.harti' },
+  instagram: { label: 'Instagram', handle: '@prof_harti', url: 'https://www.instagram.com/prof_harti/', dm: 'https://ig.me/m/prof_harti' },
 } as const;
 
 /**

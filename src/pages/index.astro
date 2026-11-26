@@ -4,8 +4,8 @@ import Board from '../components/Board.astro';
 import { quotes, levels, programme, inPerson, formats, officialVideo, reels, officialLinks, contact, whatsappHref } from '../data/site';
 
 const wa = contact.whatsapp ? whatsappHref(contact.whatsapp) : null;
-const primaryHref = wa ?? officialLinks.instagram.dm;
-const primaryVia = wa ? 'واتساب' : 'إنستغرام';
+const primaryHref = wa ?? officialLinks.facebook.dm;
+const primaryVia = wa ? 'واتساب' : 'فيسبوك ماسنجر';
 const chapters = ['Les Ondes', 'الموجات', 'Nucléaire', 'النووي', 'Dipôle RC', 'RL', 'RLC', 'La pile', 'العمود', 'Mécanique', 'الميكانيك', 'Chimie', 'الكيمياء'];
 const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribute('srcset');this.src='${officialVideo.posterFallback}'}else{this.closest('[data-poster]').classList.add('is-fallback')}`;
 ---
@@ -213,7 +213,7 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
         <li data-reveal>
           <span class="steps__n">①</span>
           <h3>صيفط كلمة <mark>«عرض»</mark></h3>
-          <p lang="fr" dir="ltr">C’est la consigne qu’il publie : un message avec le mot « عرض ». {wa ? 'Sur WhatsApp.' : 'Ici, par message privé Instagram (WhatsApp sur validation du prof).'}</p>
+          <p lang="fr" dir="ltr">C’est la consigne qu’il publie : un message avec le mot « عرض ». {wa ? 'Sur WhatsApp.' : 'Ici, par message sur sa page Facebook (WhatsApp sur validation du prof).'}</p>
         </li>
         <li data-reveal>
           <span class="steps__n">②</span>
@@ -243,12 +243,12 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
             <span class="arrow" aria-hidden="true">←</span>
           </a>
         )}
-        <a class={wa ? 'cbtn' : 'cbtn cbtn--primary'} href={officialLinks.instagram.dm} target="_blank" rel="noopener noreferrer">
-          <span class="cbtn__k" dir="ltr">Instagram · {officialLinks.instagram.handle}</span>
-          <span class="cbtn__v">راسلو فالخاص</span>
+        <a class={wa ? 'cbtn' : 'cbtn cbtn--primary'} href={officialLinks.facebook.dm} target="_blank" rel="noopener noreferrer">
+          <span class="cbtn__k" dir="ltr">Facebook · Messenger · {officialLinks.facebook.handle}</span>
+          <span class="cbtn__v">راسلو فالفيسبوك</span>
           <span class="arrow" aria-hidden="true">←</span><span class="sr-only">(نافذة جديدة)</span>
         </a>
-        <a class="cbtn" href={officialLinks.youtube.url} target="_blank" rel="noopener noreferrer">
+        <a class="cbtn cbtn--strong" href={officialLinks.youtube.url} target="_blank" rel="noopener noreferrer">
           <span class="cbtn__k" dir="ltr">YouTube · {officialLinks.youtube.handle}</span>
           <span class="cbtn__v">القناة</span>
           <span class="arrow" aria-hidden="true">←</span><span class="sr-only">(نافذة جديدة)</span>
@@ -259,6 +259,10 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
           <span class="arrow" aria-hidden="true">←</span><span class="sr-only">(نافذة جديدة)</span>
         </a>
       </div>
+      <p class="also">
+        <span class="dim">كذلك على</span>
+        <a href={officialLinks.instagram.url} target="_blank" rel="noopener noreferrer" dir="ltr">Instagram {officialLinks.instagram.handle}<span class="sr-only"> (نافذة جديدة)</span></a>
+      </p>
       <p class="signoff signoff--end" data-reveal><span class="ruqaa signoff__ar">{quotes.signOff.ar}</span></p>
     </div>
   </section>
@@ -277,7 +281,7 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
   .poster__btn:focus-visible { outline: 3px solid var(--signal); outline-offset: -6px; }
   .poster__duo { position: absolute; inset: -1px; overflow: hidden; background: linear-gradient(180deg, #ffe066 0%, #f7c51e 50%, #e3a90f 70%, #8e2238 90%, #3c0c17 100%); isolation: isolate; }
   .poster__duo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; mix-blend-mode: luminosity; filter: contrast(1.12) brightness(0.84); transform: scale(1.32); transform-origin: 50% 14%; }
-  .poster__duo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 58%, rgba(10, 8, 7, 0.6) 80%, var(--ink) 100%); }
+  .poster__duo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 46%, rgba(10, 8, 7, 0.55) 62%, rgba(10, 8, 7, 0.97) 72%, var(--ink) 78%); }
   @media (prefers-reduced-motion: no-preference) {
     .poster__duo img { animation: push 9s var(--ease) both; }
     @keyframes push { from { transform: scale(1.42); } to { transform: scale(1.32); } }
@@ -340,7 +344,7 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
     .poster__play { top: auto; bottom: 2.2rem; inset-inline-start: auto; left: 2rem; }
     .credit { left: 0.6rem; top: 1.2rem; }
     .hero__text { grid-column: 1; grid-row: 1; margin: 0; align-self: center; padding: 2rem clamp(2rem, 5vw, 5rem) 3rem; font-size: clamp(6rem, 11.5vw, 12.5rem); margin-inline-end: -0.9em; }
-    .hero__sig { top: 0.6em; left: auto; right: clamp(2rem, 5vw, 5rem); font-size: 2.6rem; }
+    .hero__sig { position: static; display: block; text-align: right; margin: 0 0 0.3em; padding-inline-start: 0.2em; font-size: clamp(2.2rem, 3.2vw, 3.2rem); transform: rotate(-6deg); transform-origin: 100% 100%; }
     .hero__word .word { text-align: right; }
     .hero__tag p { font-size: clamp(1.8rem, 2.6vw, 2.6rem); }
     .hero__tag, .hero__chips, .hero__ctas { max-width: 34rem; }
@@ -481,5 +485,9 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
   .cbtn--primary { background: var(--signal); color: var(--ink); border-color: var(--signal); min-height: 170px; }
   .cbtn--primary .cbtn__k { color: rgba(10, 8, 7, 0.7); }
   .cbtn--primary .cbtn__v { font-size: clamp(2.2rem, 6vw, 3.4rem); }
+  .cbtn--strong { border-color: rgba(247, 197, 30, 0.55); }
+  .also { margin-top: 1.2rem; display: flex; gap: 0.6rem; align-items: baseline; font-size: 0.95rem; }
+  .also a { font-weight: 700; color: var(--chalk); padding: 0.4rem 0; }
+  .also a:hover { color: var(--signal); }
   .cbtn--primary:hover { box-shadow: 0 18px 40px -14px rgba(247, 197, 30, 0.6); }
 </style>
