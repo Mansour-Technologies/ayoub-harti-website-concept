@@ -3,12 +3,19 @@ import Base from '../layouts/Base.astro';
 import { withBase } from '../lib/url';
 ---
 <Base title="Page introuvable" description="Cette page n’existe pas." home={false}>
-  <section class="section">
+  <section class="nf">
     <div class="wrap">
-      <p class="kicker">Erreur 404</p>
-      <h1 class="display" style="font-size: var(--fs-mega)">Hors <span class="hl">trajectoire.</span></h1>
-      <p class="lead muted">Cette page n’existe pas. Revenons au point de lancement.</p>
-      <p><a class="btn" href={withBase('')}>Retour à l’accueil <span class="arr" aria-hidden="true">→</span></a></p>
+      <p class="nf__code word" dir="ltr">404</p>
+      <h1 class="nf__title">هاد الصفحة <mark>ما كايناش</mark></h1>
+      <p class="nf__fr" lang="fr" dir="ltr">Cette page n’existe pas.</p>
+      <p><a class="btn" href={withBase('')}>رجوع للصفحة الرئيسية <span class="arrow" aria-hidden="true">←</span></a></p>
     </div>
   </section>
 </Base>
+<style>
+  .nf { padding-block: clamp(4rem, 12vw, 9rem); }
+  .nf__code { font-size: clamp(6rem, 30vw, 16rem); color: var(--signal); margin: 0; text-align: right; }
+  .nf__title { font-size: clamp(2.2rem, 7vw, 4.5rem); font-weight: 1000; margin: 0.5rem 0; }
+  .nf__title mark { background: none; color: var(--signal); }
+  .nf__fr { color: var(--dim); }
+</style>

@@ -1,0 +1,80 @@
+---
+/**
+ * Original whiteboard "fiche", drawn for this concept in the spirit of his public summary sheets
+ * (highlighter boxes per chapter, French formulas + Arabic labels, circled step numbers, «عرض التفوق» written
+ * top-right of every board). It reproduces none of his sheets; formulas are standard Bac physics.
+ */
+const rows = [
+  { n: '①', f: 'N(t) = N₀ · e<sup>−λt</sup>', ar: 'قانون التناقص الإشعاعي', fr: 'Décroissance radioactive', c: 'orange' },
+  { n: '②', f: 't<sub>½</sub> = ln2 / λ', ar: 'عمر النصف', fr: 'Demi-vie', c: 'orange' },
+  { n: '③', f: 'τ = R · C', ar: 'ثابتة الزمن', fr: 'Dipôle RC', c: 'teal' },
+  { n: '④', f: 'T₀ = 2π √(L·C)', ar: 'الدور الخاص', fr: 'Circuit LC', c: 'pink' },
+  { n: '⑤', f: 'v = λ / T', ar: 'سرعة الانتشار', fr: 'Ondes', c: 'yellow' },
+];
+---
+<div class="board" role="img" aria-label="Planche originale dans l’esprit de ses fiches : décroissance radioactive, demi-vie, dipôle RC, circuit LC, ondes — formules en français, annotations en arabe.">
+  <div class="board__head" aria-hidden="true">
+    <span class="board__offer ruqaa">عرض التفوق</span>
+    <span class="board__brand hand" dir="ltr">@Prof_Harti</span>
+  </div>
+  <div class="board__title" aria-hidden="true">
+    <span class="hand board__fr" dir="ltr">La décroissance radioactive</span>
+    <span class="ruqaa board__ar">التناقص الإشعاعي</span>
+  </div>
+  <div class="board__body" aria-hidden="true">
+    <svg class="board__curve" viewBox="0 0 320 200" fill="none" direction="ltr" style="direction:ltr">
+      <path d="M30 14 V178 H306" stroke="#17171a" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M24 22 30 12 36 22M298 172 308 178 298 184" stroke="#17171a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path class="board__decay" d="M30 30 C 70 92, 110 128, 160 148 S 260 172, 300 175" stroke="#d21f3c" stroke-width="4" stroke-linecap="round"/>
+      <path d="M30 104 H 92 V178" stroke="#1d4fd6" stroke-width="2" stroke-dasharray="6 6"/>
+      <text x="6" y="36" fill="#d21f3c" font-family="Caveat Variable, cursive" font-size="22" font-weight="700">N₀</text>
+      <text x="0" y="110" fill="#1d4fd6" font-family="Caveat Variable, cursive" font-size="20" font-weight="700">N₀/2</text>
+      <text x="80" y="198" fill="#1d4fd6" font-family="Caveat Variable, cursive" font-size="20" font-weight="700">t½</text>
+      <text x="292" y="198" fill="#17171a" font-family="Caveat Variable, cursive" font-size="20" font-weight="700">t</text>
+    </svg>
+    <ol class="board__rows">
+      {rows.map((r) => (
+        <li class={`hl hl--${r.c}`}>
+          <span class="board__n">{r.n}</span>
+          <span class="board__f hand" dir="ltr" set:html={r.f} />
+          <span class="board__lab"><span class="ruqaa">{r.ar}</span><span class="hand" dir="ltr">{r.fr}</span></span>
+        </li>
+      ))}
+    </ol>
+  </div>
+</div>
+
+<style>
+  .board {
+    position: relative; background: var(--board); color: var(--board-ink); border-radius: 6px;
+    padding: clamp(1rem, 3.5vw, 2.2rem); overflow: hidden;
+    border: 9px solid #cfd0d4;
+    box-shadow: 0 0 0 2px #9a9ca3, 0 0 0 5px rgba(255, 45, 74, 0.9), 0 0 38px 8px rgba(255, 45, 74, 0.45), 0 0 120px 20px rgba(200, 16, 46, 0.25);
+  }
+  .board::before { content: ''; position: absolute; inset: 0; background: linear-gradient(115deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.65) 48%, rgba(255,255,255,0) 56%); pointer-events: none; }
+  .board__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; border-bottom: 2px solid rgba(23, 23, 26, 0.12); padding-bottom: 0.4rem; }
+  .board__offer { color: var(--mk-red); font-size: clamp(1.35rem, 4.4vw, 2rem); line-height: 1.3; }
+  .board__brand { color: var(--mk-blue); font-size: clamp(1.2rem, 3.6vw, 1.6rem); }
+  .board__title { display: flex; flex-wrap: wrap-reverse; justify-content: space-between; align-items: baseline; gap: 0.2rem 1.2rem; margin: 0.9rem 0 0.6rem; }
+  .board__fr { color: var(--mk-red); font-size: clamp(1.6rem, 5.6vw, 2.5rem); text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; line-height: 1.1; }
+  .board__ar { color: var(--mk-green); font-size: clamp(1.2rem, 4vw, 1.7rem); line-height: 1.4; }
+  .board__body { display: grid; gap: 1rem 2rem; align-items: center; }
+  @media (min-width: 760px) { .board__body { grid-template-columns: 1fr 1.05fr; } }
+  .board__curve { width: 100%; max-width: 420px; height: auto; justify-self: center; }
+  @media (prefers-reduced-motion: no-preference) {
+    .board__decay { stroke-dasharray: 400; stroke-dashoffset: 400; transition: stroke-dashoffset 1.6s var(--ease) 0.2s; }
+    :global(.in) .board__decay { stroke-dashoffset: 0; }
+  }
+  .board__rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
+  .board__rows li { display: grid; grid-template-columns: auto 1fr; grid-template-areas: 'n f' 'n l'; column-gap: 0.7rem; align-items: center; padding: 0.35rem 0.8rem; border: 2px solid var(--board-ink); border-radius: 3px; transform: rotate(-0.4deg); }
+  .board__rows li:nth-child(even) { transform: rotate(0.5deg); }
+  .board__n { grid-area: n; font-size: 1.5rem; color: var(--mk-blue); }
+  .board__f { grid-area: f; font-size: clamp(1.45rem, 4.6vw, 1.85rem); line-height: 1.15; justify-self: end; }
+  .board__f :global(sup), .board__f :global(sub) { font-size: 0.6em; }
+  .board__lab { grid-area: l; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 0.8rem; font-size: 1rem; line-height: 1.4; color: #3a3a40; }
+  .board__lab .hand { font-size: 1.15rem; color: var(--mk-blue); }
+  .hl--orange { background: var(--hl-orange); }
+  .hl--teal { background: var(--hl-teal); }
+  .hl--pink { background: var(--hl-pink); }
+  .hl--yellow { background: var(--hl-yellow); }
+</style>
