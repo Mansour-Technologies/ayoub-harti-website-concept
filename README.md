@@ -52,11 +52,7 @@ Everything lives in `src/data/site.ts`:
 - reels
 - links
 
-**WhatsApp number to be inserted on the teacher's approval.** Set `contact.whatsapp` in `src/data/site.ts` (international digits). While it is `null`:
-- no WhatsApp button is rendered
-- the Instagram DM (`https://ig.me/m/prof_harti`) is the primary contact
-
-Once a number is set, the WhatsApp button becomes primary and pre-fills his registration keyword « عرض ».
+**WhatsApp number to be inserted on the teacher's approval.** Set `contact.whatsapp` in `src/data/site.ts` (international digits). While it is `null`, no WhatsApp button is rendered. The primary contact is then his verified Facebook page via Messenger (`https://m.me/Prof.harti`), followed by YouTube; Instagram is only a secondary link. Once a number is set, the WhatsApp button becomes primary and pre-fills his registration keyword « عرض ».
 
 ## Tests (Playwright)
 The suite checks:
@@ -66,6 +62,7 @@ The suite checks:
 - Anchor navigation.
 - Mobile menu: keyboard, focus trap, Escape, focus return.
 - External links: https, verified domains, new tab, `rel=noopener`. No phone number in the page.
+- Contact order: Facebook Messenger is primary, YouTube second, Instagram secondary.
 - **The hero poster is a button named "Lire la vidéo officielle : …".** Its image is that same video's frame on `i.ytimg.com`, and the youtube-nocookie iframe loads only on click.
 - **Fallback:** with `i.ytimg.com` blocked, the typographic panel shows and the button still plays.
 - Instagram reels load their official `/embed/` iframe only on click.
