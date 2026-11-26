@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
 import Glyph from '../../components/Glyph.astro';
+import VideoFacade from '../../components/VideoFacade.astro';
 import { videos } from '../../data/videos';
 import { levels } from '../../data/courses';
 
@@ -19,10 +20,13 @@ const payload = videos.map((v) => ({ ...v, levelLabel: levelLabel(v.level) }));
     <div class="wrap">
       <div class="vt__stage" data-stage aria-live="polite">
         <!-- filled by script; server fallback below -->
-        <div class="stage-noscript">
-          <p class="kicker">Vidéo à la une</p>
-          <p class="display" style="font-size:2rem">Présentation de l’Offre Excellence</p>
-          <p><a href="https://www.youtube.com/watch?v=bQRpHAGhIXw" target="_blank" rel="noopener noreferrer">Voir sur YouTube</a></p>
+        <div class="st">
+          <div class="st__media"><VideoFacade id="bQRpHAGhIXw" title={videos[0].titleAr ?? videos[0].title} eager /></div>
+          <div class="st__info">
+            <p class="st__meta mono">Tous niveaux · Programme · 0:59</p>
+            <h2 class="st__title">{videos[0].title}</h2>
+            <p class="st__sum">{videos[0].summary}</p>
+          </div>
         </div>
       </div>
 
@@ -203,7 +207,7 @@ const payload = videos.map((v) => ({ ...v, levelLabel: levelLabel(v.level) }));
     const pct = read('progress')[v.id] ?? 0;
     const media =
       v.kind === 'official'
-        ? `<div class="yt" data-yt="${esc(v.youtubeId!)}" data-yt-title="${esc(v.titleAr ?? v.title)}"><button type="button" class="yt__btn" aria-label="Lire la vidéo : ${esc(v.title)} (charge le lecteur YouTube)"><img src="https://i.ytimg.com/vi/${esc(v.youtubeId!)}/hqdefault.jpg" alt="" width="480" height="360"><span class="yt__play" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="yt__label mono">Vidéo officielle · YouTube @ProfHarti</span></button></div>`
+        ? `<div class="yt" data-yt="${esc(v.youtubeId!)}" data-yt-title="${esc(v.titleAr ?? v.title)}"><button type="button" class="yt__btn"><span class="sr-only">Lire la vidéo : ${esc(v.title)} (charge le lecteur YouTube) — </span><img src="https://i.ytimg.com/vi/${esc(v.youtubeId!)}/hqdefault.jpg" alt="" width="480" height="360"><span class="yt__play" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><span class="yt__label mono">Vidéo officielle · YouTube @ProfHarti</span></button></div>`
         : `<div class="st__sheet">${glyphFor(v.unit)}<span class="st__slot mono">Emplacement vidéo · à connecter à une leçon officielle</span><p class="st__step"><span class="st__stepn">Point ${step + 1} / ${v.points.length}</span>${esc(v.points[step])}</p></div>`;
     stage.innerHTML = `<div class="st">
       <div class="st__media">${media}</div>

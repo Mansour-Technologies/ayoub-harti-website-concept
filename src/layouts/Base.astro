@@ -49,11 +49,11 @@ const isCurrent = (href: string) => href === current;
     </div>
     <header class="hdr" data-header>
       <div class="wrap hdr__in">
-        <a class="brand" href={withBase('')} aria-label="Prof Harti — accueil">
+        <a class="brand" href={withBase('')}>
           <span class="brand__mark" aria-hidden="true">
             <svg viewBox="0 0 28 28" width="28" height="28"><circle cx="14" cy="14" r="13" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".5"/><ellipse cx="14" cy="14" rx="13" ry="5" fill="none" stroke="currentColor" stroke-width="1.5" transform="rotate(-30 14 14)"/><circle cx="14" cy="14" r="3.2" fill="#f7c51e"/></svg>
           </span>
-          <span class="brand__word">Prof<b>Harti</b></span>
+          <span class="brand__word">Prof <b>Harti</b></span><span class="sr-only"> — accueil</span>
         </a>
         <nav class="hdr__nav" aria-label="Navigation principale">
           <ul>
@@ -141,7 +141,7 @@ const isCurrent = (href: string) => href === current;
   .hdr__in { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; height: var(--header-h); }
   .brand { display: inline-flex; align-items: center; gap: 0.55rem; text-decoration: none; color: var(--chalk); }
   .brand__word { font-family: var(--f-display); font-stretch: 70%; font-weight: 600; font-size: 1.45rem; text-transform: uppercase; letter-spacing: 0.01em; line-height: 1; }
-  .brand__word b { font-weight: 900; color: var(--signal); margin-inline-start: 0.12em; font-style: italic; }
+  .brand__word b { font-weight: 900; color: var(--signal); font-style: italic; }
   .hdr__nav ul { display: flex; gap: clamp(0.6rem, 1.6vw, 1.6rem); list-style: none; margin: 0; padding: 0; }
   .hdr__nav a { text-decoration: none; font-size: 0.9rem; font-weight: 560; font-stretch: 88%; color: var(--chalk-dim); padding: 0.5rem 0; position: relative; }
   .hdr__nav a:hover, .hdr__nav a[aria-current='page'] { color: var(--chalk); }
