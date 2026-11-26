@@ -2,6 +2,8 @@ import { test, expect, type Page } from '@playwright/test';
 
 const NOTICE = 'Concept de site internet proposé par Mansour Technologies — Démonstration non officielle.';
 const ALLOWED_HOSTS = ['www.instagram.com', 'ig.me', 'www.youtube.com', 'www.facebook.com', 'mansourtechnologies.com', 'wa.me'];
+const VIDEO = 'bQRpHAGhIXw';
+const SECTIONS = ['prof', 'sbora', 'lives', 'offre', 'inscription', 'contact'];
 
 function watch(page: Page) {
   const errors: string[] = [];
@@ -15,11 +17,18 @@ test('home loads with no console errors and no 404 assets @mobile', async ({ pag
   const errors = watch(page);
   const res = await page.goto('', { waitUntil: 'networkidle' });
   expect(res?.status()).toBe(200);
-  // scroll through the page so lazy assets load too
   await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 600) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 40)); } });
   await page.waitForLoadState('networkidle');
   expect(errors, errors.join('\n')).toEqual([]);
   await expect(page.locator('h1')).toHaveCount(1);
+});
+
+test('Arabic-first document: lang ar, dir rtl, French passages marked @mobile', async ({ page }) => {
+  await page.goto('');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+  await expect(page.locator('.notice')).toHaveAttribute('lang', 'fr');
+  expect(await page.locator('[lang="fr"]').count()).toBeGreaterThan(10);
 });
 
 test('demo notice, footer attribution and noindex are present @mobile', async ({ page, request }) => {
@@ -30,12 +39,18 @@ test('demo notice, footer attribution and noindex are present @mobile', async ({
   await expect(attr).toHaveText('Concept digital proposé par Mansour Technologies.');
   expect(await (await request.get('robots.txt')).text()).toContain('Disallow: /');
   expect((await request.get('og.png')).status()).toBe(200);
+  // 404 page carries the notice and noindex too
+  const nf = await request.get('page-qui-nexiste-pas/');
+  expect(nf.status()).toBe(404);
+  const html = await nf.text();
+  expect(html).toContain(NOTICE);
+  expect(html).toContain('noindex, nofollow');
 });
 
 test('anchor navigation scrolls to each section', async ({ page }) => {
   await page.goto('');
-  const nav = page.getByRole('navigation', { name: 'Navigation principale' });
-  for (const id of ['professeur', 'niveaux', 'offre', 'video', 'inscription', 'contact']) {
+  const nav = page.getByRole('navigation', { name: 'القائمة الرئيسية' });
+  for (const id of SECTIONS) {
     await nav.locator(`a[href="#${id}"]`).click();
     await expect(page).toHaveURL(new RegExp(`#${id}$`));
     await expect(page.locator(`#${id}`)).toBeInViewport();
@@ -48,11 +63,11 @@ test('mobile menu: keyboard open, focus trap, Escape, focus return, anchor link 
   const btn = page.locator('[data-menu-open]');
   await btn.focus();
   await page.keyboard.press('Enter');
-  const dialog = page.getByRole('dialog', { name: 'Menu du site' });
+  const dialog = page.getByRole('dialog', { name: 'قائمة الموقع' });
   await expect(dialog).toBeVisible();
   await expect(btn).toHaveAttribute('aria-expanded', 'true');
   await expect(page.locator('[data-menu-close]')).toBeFocused();
-  for (let i = 0; i < 12; i++) await page.keyboard.press('Tab');
+  for (let i = 0; i < 14; i++) await page.keyboard.press('Tab');
   expect(await page.evaluate(() => !!document.activeElement?.closest('[data-menu]'))).toBe(true);
   await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
@@ -75,13 +90,13 @@ test('every external link is https, verified domain, new tab, rel noopener @mobi
     expect(l.target, l.href).toBe('_blank');
     expect(l.rel, l.href).toContain('noopener');
   }
-  // Contact section: Instagram DM primary, YouTube, Facebook; WhatsApp absent while config is null
   const contact = page.locator('#contact');
   await expect(contact.locator('.cbtn').first()).toHaveAttribute('href', 'https://ig.me/m/prof_harti');
   await expect(contact.locator('a[href="https://www.youtube.com/@ProfHarti"]')).toHaveCount(1);
   await expect(contact.locator('a[href="https://www.facebook.com/Prof.harti"]')).toHaveCount(1);
+  // WhatsApp is absent while src/data/site.ts contact.whatsapp is null; no phone number anywhere in the page
   await expect(page.locator('[data-whatsapp], a[href*="wa.me"]')).toHaveCount(0);
-  // no internal dead anchors
+  expect(await page.content()).not.toMatch(/0772|212772|89\s?55\s?99/);
   const hashes = await page.$$eval('a[href^="#"]', (as) => as.map((a) => a.getAttribute('href')!));
   for (const h of hashes) {
     expect(h).not.toBe('#');
@@ -89,23 +104,61 @@ test('every external link is https, verified domain, new tab, rel noopener @mobi
   }
 });
 
-test('YouTube facade loads the nocookie iframe only on click', async ({ page }) => {
-  const yt: string[] = [];
-  page.on('request', (r) => { if (/youtube(-nocookie)?\.com\/embed/.test(r.url())) yt.push(r.url()); });
-  await page.goto('#video');
-  const box = page.locator('#video [data-yt]');
-  await expect(box.locator('iframe')).toHaveCount(0);
-  expect(yt).toEqual([]);
-  await box.locator('.yt__btn').click();
-  await expect(box.locator('iframe')).toHaveAttribute('src', /^https:\/\/www\.youtube-nocookie\.com\/embed\/bQRpHAGhIXw/);
+test('hero poster is the play button of the same official video and loads youtube-nocookie only on click @mobile', async ({ page }) => {
+  const embeds: string[] = [];
+  page.on('request', (r) => { if (/youtube(-nocookie)?\.com\/embed/.test(r.url())) embeds.push(r.url()); });
+  await page.goto('', { waitUntil: 'networkidle' });
+  const hero = page.locator('.hero [data-embed="yt"]');
+  const btn = hero.getByRole('button', { name: /^Lire la vidéo officielle : للتسجيل في عرض التفوق/ });
+  await expect(btn).toBeVisible();
+  // the poster image is YouTube's own frame of that same video
+  await expect(hero.locator('img')).toHaveAttribute('src', new RegExp(`^https://i\\.ytimg\\.com/vi/${VIDEO}/`));
+  expect(await hero.locator('img').evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
+  await expect(page.locator('.hero .credit')).toHaveText('Image : vidéo officielle YouTube — Prof Harti');
+  await expect(hero.locator('iframe')).toHaveCount(0);
+  expect(embeds).toEqual([]);
+  await btn.click();
+  await expect(hero.locator('iframe')).toHaveAttribute('src', new RegExp(`^https://www\\.youtube-nocookie\\.com/embed/${VIDEO}\\?`));
 });
 
-test('no horizontal overflow at the 8 target widths', async ({ page }) => {
+test('hero poster falls back to a typographic panel when YouTube images fail, and still plays @mobile', async ({ page }) => {
+  await page.route(/i\.ytimg\.com/, (r) => r.abort());
+  await page.goto('');
+  const hero = page.locator('.hero [data-embed="yt"]');
+  await expect(hero).toHaveClass(/is-fallback/);
+  await expect(hero.locator('.poster__fallback')).toBeVisible();
+  await hero.locator('button[data-embed-play]').click();
+  await expect(hero.locator('iframe')).toHaveAttribute('src', /youtube-nocookie\.com\/embed\/bQRpHAGhIXw/);
+});
+
+test('Instagram reels are official embeds loaded only on click', async ({ page }) => {
+  const ig: string[] = [];
+  page.on('request', (r) => { if (/instagram\.com\/p\/[^/]+\/embed/.test(r.url())) ig.push(r.url()); });
+  await page.goto('#sbora', { waitUntil: 'networkidle' });
+  const reels = page.locator('[data-embed="ig"]');
+  await expect(reels).toHaveCount(2);
+  await expect(page.locator('#sbora iframe')).toHaveCount(0);
+  expect(ig).toEqual([]);
+  await reels.first().locator('button[data-embed-play]').click();
+  await expect(reels.first().locator('iframe')).toHaveAttribute('src', /^https:\/\/www\.instagram\.com\/p\/DfsoLePN-qy\/embed\/$/);
+  await expect(reels.nth(1).locator('iframe')).toHaveCount(0);
+});
+
+test('no horizontal overflow and no clipped content at the 8 target widths', async ({ page }) => {
   for (const w of [320, 375, 390, 430, 768, 1024, 1440, 1920]) {
     await page.setViewportSize({ width: w, height: 900 });
     await page.goto('');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, `@${w}px`).toBeLessThanOrEqual(0);
+    // body uses overflow-x: clip, so also check that no visible content box crosses the viewport edges
+    const clipped = await page.evaluate(() => {
+      const vw = document.documentElement.clientWidth;
+      return Array.from(document.querySelectorAll('main *, header *, footer *'))
+        .filter((el) => !el.closest('[aria-hidden="true"], .poster, .band, .sr-only, [data-menu]'))
+        .filter((el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && (r.right > vw + 1 || r.left < -1); })
+        .map((el) => `${el.tagName}.${(el as HTMLElement).className}`).slice(0, 5);
+    });
+    expect(clipped, `@${w}px`).toEqual([]);
   }
 });
 
@@ -118,7 +171,6 @@ test('removed app routes are gone (404)', async ({ request }) => {
 
 test('the showcase stores nothing in the browser', async ({ page }) => {
   await page.goto('');
-  await page.locator('#video .yt__btn').click();
-  await page.locator('[data-menu-open]').isVisible();
+  await page.locator('.hero button[data-embed-play]').click();
   expect(await page.evaluate(() => localStorage.length + sessionStorage.length)).toBe(0);
 });
