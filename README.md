@@ -9,9 +9,12 @@ Live: https://mansour-technologies.github.io/ayoub-harti-website-concept/
 This is a personal-brand single-page showcase for a Moroccan physics-chemistry teacher and creator. The page is **Arabic-first** (`lang="ar" dir="rtl"`) and written in his Darija. French appears as a secondary layer for scientific terms and translations, the same way his whiteboards are written: French formulas, Arabic notes.
 
 It is built from his real identity:
-- **Hero:** his face, through the official YouTube video « للتسجيل في عرض التفوق ».
-  - The video's own YouTube-hosted frame is the poster *and* the click-to-play control (youtube-nocookie).
-  - It is shown in natural colour (a light warm grade only). The frame's light studio backdrop is multiplied onto a champagne-to-oxblood light, so it becomes a glow behind his head and dissolves into the page: no frame, no split.
+- **Hero:** the profile portrait of his verified Facebook page (black tuxedo, studio key light), chosen by the client.
+  - Hotlinked from Facebook's public page-picture endpoint `https://graph.facebook.com/Prof.harti/picture?width=1080&height=1080` (redirects to the CDN; 1254×1254). Never rehosted, never committed. Credited « Photo : page Facebook officielle — Prof Harti », linked to his page.
+  - Large, anchored to the bottom edge, face in the upper third; directional linear fades dissolve it into the wine field (no circle, no box). Shown at or below its native size; 3.5 % film grain.
+  - His face, shirt, suit and the warm glow behind his head are untouched. Only the photo's blue studio backdrop is re-toned to wine by an SVG key (`#wine-backdrop`: pixels where blue clearly exceeds red, plus the grey fringe around the glow; the shirt area is excluded spatially). Luminance is preserved.
+  - Text fallback (his Ruqaa sign-off) if the image fails.
+- **The official video « للتسجيل في عرض التفوق »** is a separate, labelled play control (« ▶ عرض التفوق », YouTube's own small frame as thumbnail; youtube-nocookie loads only on click).
 - **Wordmark:** the « PROF / HARTI » heavy italic, with a script signature and a lightbulb, as on his channel banner.
 - **His published lines, quoted and sourced:** « ما تخافش من الفيزياء », « أنا هنا باش نساعدك ونبسط ليك الفيزياء », « دقة دقة », « سول و انا غادي نجاوبك », and his sign-off « أستاذكم الحارتي ».
 - **Board section:** an original whiteboard « fiche » in the style of his public summary sheets: highlighter boxes, bilingual labels, « عرض التفوق » written top-right, and a red LED frame. Two of his public Instagram reels are official embeds, loaded on click.
@@ -22,18 +25,19 @@ It is built from his real identity:
 
 There are no app features, no forms, no accounts and no browser storage.
 
-## Visual direction: "Oxblood night" (redesign of 27 Nov 2026)
-Taken from his own wardrobe and banner, then desaturated:
+## Visual direction: "Wine & crimson" (client brief, 27 Nov 2026)
+Built around his tuxedos (the burgundy one of his avatar and banner, the black one of his Facebook portrait):
 
-| Token | Hex | Source in his identity | Use |
-|---|---|---|---|
-| `--ink` | `#160a0d` | burgundy tuxedo, pushed to night | page field |
-| `--ink-2` / `--wine` | `#1e0d12` / `#3b141c` | same suit, mid-tones | alternating sections, the « Le prof » panel |
-| `--gold` (champagne) | `#d9bf92` | gold glow behind him on the banner | HARTI, numbers, primary button |
-| `--chalk` / `--ivory` | `#f4ece1` | his white shirt | text on dark; the light « عرض التفوق » page |
-| `--oxblood` | `#5a1a27` | the suit, as ink | headlines on ivory |
-| `--signal` | `#e9b949` | his avatar's yellow, softened | rare: play disc, focus ring, one underline, the notice dot |
-| `--claret` | `#a3354a` | banner/LED red | thin editorial rules only |
+| Token | Hex | Use |
+|---|---|---|
+| `--ink` | `#1a080b` | wine-black page field |
+| `--ink-2` / `--wine` | `#230b10` / `#4a1220` | alternating sections, « Le prof » panel |
+| `--red` | `#a3192f` | brand crimson: primary buttons, header CTA, primary contact card, LIVE tag (ivory on it 6.6:1) |
+| `--red-deep` | `#7d1325` | the « عرض التفوق » page; headlines on ivory (9.2:1) |
+| `--claret` | `#c03a50` | thin editorial rules on dark |
+| `--gold` (champagne) | `#e2c799` | HARTI, numbers, highlights |
+| `--chalk` / `--ivory` | `#f6eee3` | text on dark; the registration page |
+| `--signal` | `#e9b949` | his yellow, rare: play disc, focus ring, one underline, notice dot |
 
 Three typographic voices: the heavy italic PROF HARTI of his banner (Archivo), a fine script signature (Mrs Saint Delafield), and Cairo for his Arabic at calmer weights (700 instead of 900–1000) with taller line-heights. Buttons are square-shouldered (2 px radius); pills and the saturated yellow band are gone.
 
@@ -79,9 +83,9 @@ The suite checks:
 - Mobile menu: keyboard, focus trap, Escape, focus return.
 - External links: https, verified domains, new tab, `rel=noopener`. No phone number in the page.
 - Contact order: Facebook Messenger is primary, YouTube second, Instagram secondary.
-- **The hero poster is a button named "Lire la vidéo officielle : …".** Its image is that same video's frame on `i.ytimg.com`, and the youtube-nocookie iframe loads only on click.
+- **The video control is a button named "Lire la vidéo officielle : …".** Its thumbnail is that same video's frame on `i.ytimg.com`, and the youtube-nocookie iframe loads only on click.
 - **Fallback:** with `i.ytimg.com` blocked, the typographic panel shows and the button still plays.
-- **Natural colour:** the hero photo uses no colour-replacing blend or hue/greyscale filter, and the hero is fully visible with reduced motion.
+- **Portrait:** the first image is the Facebook Graph portrait, credited and linked; it falls back to text when Facebook is blocked; it uses no colour-replacing blend or hue/greyscale/sepia filter; the hero is fully visible with reduced motion.
 - Instagram reels load their official `/embed/` iframe only on click.
 - No horizontal overflow and no content crossing the viewport at 320, 375, 390, 430, 768, 1024, 1440 and 1920 px.
 - The removed routes return 404.
@@ -100,7 +104,8 @@ No photograph, frame, thumbnail or post of the teacher is stored in this reposit
 
 | Placement | What is shown now | Recommended replacement on approval |
 |---|---|---|
-| Hero portrait / play control | YouTube-hosted frame `i.ytimg.com/vi/bQRpHAGhIXw/oar1.jpg` (fallback `maxresdefault.jpg`, then a typographic panel), hotlinked as the poster of that same official video. Natural colour with a light warm grade, blended into the page by a CSS multiply light and a soft mask; credited « Image : vidéo officielle YouTube — Prof Harti ». | The original of his YouTube avatar (burgundy tuxedo and bow tie on yellow), or the channel-banner portrait (seated, burgundy suit) |
+| **Hero portrait — needs his permission** | His Facebook page profile picture, hotlinked via `https://graph.facebook.com/Prof.harti/picture?width=1080&height=1080` (never the redirected fbcdn URL, never committed). Backdrop re-toned to wine by CSS/SVG; face, shirt and suit untouched. Credited and linked to facebook.com/Prof.harti. | The original studio file of this portrait (black tuxedo), with a clean backdrop |
+| Video play control | YouTube-hosted thumbnail `i.ytimg.com/vi_webp/bQRpHAGhIXw/mqdefault.webp` of that same official video (fallback `.jpg`, then a text ▶); credited « Image : vidéo officielle YouTube — Prof Harti ». | — (official embed) |
 | « Au tableau » board | Original drawing for this concept, in the style of his summary sheets | Scans of his real « ملخصات » sheets |
 | Two reel cards | Official Instagram embeds of public reels `DfsoLePN-qy` and `DfxRHKFBlsc`, loaded only after a click; typographic covers | A still or clean video of him at the whiteboard (from reel `DfsoLePN-qy`) |
 | Open Graph image | Original typographic composition (`scripts/og.html`) | Same layout with an authorised portrait |
@@ -109,7 +114,8 @@ No photograph, frame, thumbnail or post of the teacher is stored in this reposit
 Icons, the board illustration, the favicon and the OG image are original work.
 
 ## Known limitations
-- The official YouTube channel exposes **one** playable public video. The hero poster is that video's own frame (1920×1080, 2021, light-blue studio background). It is soft when magnified on phones; an authorised studio portrait would be sharper.
+- The hero portrait depends on Facebook's page-picture endpoint; if he changes his profile picture, the hero changes with it, and if it fails the text fallback shows.
+- The official YouTube channel exposes **one** playable public video.
 - Instagram embeds depend on those posts staying public.
 - Prices and dates are intentionally absent.
 - The in-person schedule is shown as « annoncé le 20/11/2026 — à confirmer ».

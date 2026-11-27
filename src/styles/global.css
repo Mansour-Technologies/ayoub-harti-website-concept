@@ -5,30 +5,32 @@
 @import '@fontsource/mrs-saint-delafield/latin-400.css';
 
 :root {
-  /* Palette "Oxblood night" — taken from his own wardrobe and banner, then desaturated:
-     the burgundy tuxedo (avatar, banner, video intro) becomes the night field; the gold glow behind him on the
-     banner becomes champagne; his white shirt becomes ivory; his signal-yellow avatar background survives as a
-     rare accent (play control, focus, one underline), never as a flood. */
-  --ink: #160a0d;          /* oxblood night: page field */
-  --ink-2: #1e0d12;        /* one step up: alternate sections */
-  --ink-3: #2a1218;        /* raised surfaces */
-  --wine: #3b141c;         /* deep burgundy panels */
-  --claret: #a3354a;       /* thin editorial rules only (decor) */
-  --line: rgba(244, 236, 225, 0.12);
-  --line-strong: rgba(244, 236, 225, 0.26);
-  --chalk: #f4ece1;        /* ivory text, 16.4:1 on --ink */
-  --dim: #c4b4a4;          /* secondary text, 9.4:1 on --ink */
-  --gold: #d9bf92;         /* champagne: wordmark, numbers, primary button (11.3:1 on --ink) */
-  --brass: #a88758;        /* hairlines and small marks on dark */
-  --signal: #e9b949;       /* his yellow, softened — rare accent */
-  --ivory: #f4ece1;        /* light sections */
-  --ivory-2: #ebe0cf;
-  --oxblood: #5a1a27;      /* text/headlines on ivory, 11.6:1 */
-  --on-ivory: #24150f;     /* body text on ivory */
-  --on-ivory-dim: #5e4a3e; /* 7.4:1 on ivory */
-  --bordeaux: #5a1a27;
-  --bordeaux-2: #3b141c;
-  --red: #a3354a;
+  /* Palette "Wine & crimson" (client brief, 27 Nov 2026): built around his tuxedos — the burgundy one (YouTube avatar,
+     banner) and the black one with its warm studio glow (Facebook portrait). A deep wine-red field, a rich crimson as
+     the brand colour (buttons, the offer page, rules), ivory and champagne for type, and his signal yellow only as a
+     rare accent (play control, focus, one underline, notice dot). No fire-engine reds. */
+  --ink: #1a080b;          /* wine-black field */
+  --ink-2: #230b10;        /* alternate sections */
+  --ink-3: #2e0f16;
+  --wine: #4a1220;         /* deep wine panel */
+  --red: #a3192f;          /* brand crimson: ivory on it 6.6:1 */
+  --red-2: #b8233b;        /* hover */
+  --red-deep: #7d1325;     /* the offer page; ivory on it 9.2:1 */
+  --claret: #c03a50;       /* thin rules on dark (decor) */
+  --line: rgba(246, 238, 227, 0.12);
+  --line-strong: rgba(246, 238, 227, 0.26);
+  --chalk: #f6eee3;        /* ivory text, 17:1 on --ink */
+  --dim: #cdb9a8;          /* secondary text, 10:1 on --ink */
+  --gold: #e2c799;         /* champagne: wordmark, numbers */
+  --brass: #b8925e;
+  --signal: #e9b949;       /* his yellow, softened — rare */
+  --ivory: #f6eee3;
+  --ivory-2: #ede1d0;
+  --oxblood: #7d1325;      /* headlines on ivory, 9.2:1 */
+  --on-ivory: #2a1210;
+  --on-ivory-dim: #5e4440; /* 7.6:1 on ivory */
+  --bordeaux: #7d1325;
+  --bordeaux-2: #4a1220;
   --led: #ff2d4a;
   --board: #fbfaf6;
   --board-ink: #17171a;
@@ -114,11 +116,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* Buttons: tailored, square-shouldered, calm */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.8rem;
-  min-height: 52px; padding: 0.55rem 1.6rem; border: 1px solid var(--gold);
-  background: var(--gold); color: var(--ink); font-weight: 800; font-size: 1.02rem; text-decoration: none;
+  min-height: 52px; padding: 0.55rem 1.6rem; border: 1px solid var(--red);
+  background: var(--red); color: var(--chalk); font-weight: 800; font-size: 1.02rem; text-decoration: none;
   border-radius: var(--radius); transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease);
 }
-.btn:hover { background: var(--chalk); border-color: var(--chalk); }
+.btn:hover { background: var(--red-2); border-color: var(--red-2); }
 .btn .fr { font-size: 0.78rem; font-weight: 700; opacity: 0.75; }
 .btn--ghost { background: transparent; color: var(--chalk); border-color: var(--line-strong); }
 .btn--ghost:hover { background: transparent; border-color: var(--gold); color: var(--gold); }

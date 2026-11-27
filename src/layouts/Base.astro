@@ -7,7 +7,7 @@ interface Props {
   title?: string;
   description: string;
   home?: boolean;
-  preload?: { srcset: string; sizes: string };
+  preload?: string;
 }
 const { title, description, home = true, preload } = Astro.props;
 const fullTitle = title ? `${title} — Prof Harti | Concept de site` : `Prof Harti · أيوب حارتي — الفيزياء والكيمياء | Concept de site`;
@@ -24,11 +24,11 @@ const ogImage = new URL(withBase('og.png'), Astro.site).toString();
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="theme-color" content="#160a0d" />
+    <meta name="theme-color" content="#1a080b" />
     <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
     <link rel="canonical" href={canonical} />
-    <link rel="preconnect" href="https://i.ytimg.com" />
-    {preload && <link rel="preload" as="image" imagesrcset={preload.srcset} imagesizes={preload.sizes} fetchpriority="high" />}
+    <link rel="preconnect" href="https://graph.facebook.com" />
+    {preload && <link rel="preload" as="image" href={preload} fetchpriority="high" />}
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ar_MA" />
     <meta property="og:locale:alternate" content="fr_MA" />
@@ -135,12 +135,12 @@ const ogImage = new URL(withBase('og.png'), Astro.site).toString();
 
 <style is:global>
   /* Notice: same field as the page, one step lighter, with his yellow as a single dot — visible but quiet */
-  .notice { background: #24100f; color: #e6d9c6; font-size: 0.74rem; line-height: 1.4; position: relative; z-index: 31; border-bottom: 1px solid rgba(217, 191, 146, 0.22); }
+  .notice { background: #2a0c12; color: #ecdcca; font-size: 0.74rem; line-height: 1.4; position: relative; z-index: 31; border-bottom: 1px solid rgba(226, 199, 153, 0.2); }
   .notice__in { display: flex; gap: 0.6rem; align-items: center; padding-block: 0.42rem; }
   .notice p { margin: 0; font-weight: 600; letter-spacing: 0.01em; }
   .notice__dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--signal); }
 
-  .hdr { position: sticky; top: 0; z-index: 30; background: rgba(22, 10, 13, 0.88); backdrop-filter: saturate(140%) blur(12px); border-bottom: 1px solid var(--line); }
+  .hdr { position: sticky; top: 0; z-index: 30; background: rgba(26, 8, 11, 0.88); backdrop-filter: saturate(140%) blur(12px); border-bottom: 1px solid var(--line); }
   .hdr__in { display: flex; align-items: center; gap: 1.25rem; height: var(--header-h); }
   .brand { display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--chalk); }
   .brand__word { font-size: 1.2rem; line-height: 1; font-weight: 800; white-space: nowrap; }
@@ -152,8 +152,8 @@ const ogImage = new URL(withBase('og.png'), Astro.site).toString();
   .hdr__nav a::after { content: ''; position: absolute; inset-inline: 0; bottom: 0.15rem; height: 1px; background: var(--gold); transform: scaleX(0); transform-origin: right; transition: transform 0.4s var(--ease); }
   .hdr__nav a:hover, .hdr__nav a.is-active { color: var(--chalk); }
   .hdr__nav a:hover::after, .hdr__nav a.is-active::after { transform: scaleX(1); }
-  .hdr__cta { display: inline-flex; align-items: center; min-height: 40px; padding: 0.3rem 1.1rem; border: 1px solid var(--gold); color: var(--gold); font-weight: 700; font-size: 0.92rem; text-decoration: none; border-radius: var(--radius); white-space: nowrap; transition: background 0.3s var(--ease), color 0.3s var(--ease); }
-  .hdr__cta:hover { background: var(--gold); color: var(--ink); }
+  .hdr__cta { display: inline-flex; align-items: center; min-height: 40px; padding: 0.3rem 1.1rem; border: 1px solid var(--red); background: var(--red); color: var(--chalk); font-weight: 700; font-size: 0.92rem; text-decoration: none; border-radius: var(--radius); white-space: nowrap; transition: background 0.3s var(--ease), color 0.3s var(--ease); }
+  .hdr__cta:hover { background: var(--red-2); border-color: var(--red-2); }
   .menu-btn { display: none; align-items: center; gap: 0.65rem; min-height: 44px; padding: 0.3rem 0.9rem; background: none; border: 1px solid var(--line-strong); border-radius: var(--radius); color: var(--chalk); font-weight: 700; font-size: 0.92rem; }
   .menu-btn__bars { display: grid; gap: 6px; width: 22px; }
   .menu-btn__bars i { display: block; height: 1.5px; background: currentColor; }
@@ -161,7 +161,7 @@ const ogImage = new URL(withBase('og.png'), Astro.site).toString();
   @media (max-width: 1099px) { .hdr__nav { display: none; } .menu-btn { display: inline-flex; } .hdr__cta { margin-inline-start: auto; } }
   @media (max-width: 479px) { .hdr__cta { display: none; } .menu-btn { margin-inline-start: auto; } }
 
-  .menu { position: fixed; inset: 0; z-index: 60; background: radial-gradient(90% 55% at 100% 0%, rgba(90, 26, 39, 0.6), transparent 70%), var(--ink); overflow-y: auto; display: flex; flex-direction: column; padding-bottom: 2rem; }
+  .menu { position: fixed; inset: 0; z-index: 60; background: radial-gradient(90% 55% at 100% 0%, rgba(125, 19, 37, 0.55), transparent 70%), var(--ink); overflow-y: auto; display: flex; flex-direction: column; padding-bottom: 2rem; }
   .menu[hidden] { display: none; }
   .menu__top { display: flex; justify-content: space-between; align-items: center; min-height: var(--header-h); border-bottom: 1px solid var(--line); }
   .menu__close { background: none; border: 1px solid var(--line-strong); color: var(--chalk); min-height: 44px; padding: 0.3rem 1rem; border-radius: var(--radius); font-weight: 700; }

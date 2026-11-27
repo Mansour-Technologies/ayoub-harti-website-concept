@@ -1,40 +1,47 @@
 ---
 import Base from '../layouts/Base.astro';
 import Board from '../components/Board.astro';
-import { quotes, levels, programme, inPerson, formats, officialVideo, reels, officialLinks, contact, whatsappHref } from '../data/site';
+import { quotes, levels, programme, inPerson, formats, officialVideo, portrait, reels, officialLinks, contact, whatsappHref } from '../data/site';
 
 const wa = contact.whatsapp ? whatsappHref(contact.whatsapp) : null;
 const primaryHref = wa ?? officialLinks.facebook.dm;
 const primaryVia = wa ? 'واتساب' : 'فيسبوك ماسنجر';
 // His own recurring lines (each one is quoted with its source further down the page).
 const phrases = ['ما تخافش من الفيزياء', 'دقة دقة', 'سول و انا غادي نجاوبك', 'واخة تكون زليجة غادي تفهم', 'غادي تسحر و تنعس', 'أستاذكم الحارتي'];
-const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribute('srcset');this.src='${officialVideo.posterFallback}'}else{this.closest('[data-poster]').classList.add('is-fallback')}`;
+const thumbOnError = `if(!this.dataset.f){this.dataset.f='1';this.src='${officialVideo.thumbFallback}'}else{this.closest('[data-poster]').classList.add('is-fallback')}`;
+const portraitOnError = `this.closest('[data-portrait]').classList.add('is-fallback')`;
 ---
-<Base preload={{ srcset: officialVideo.posterSrcset, sizes: officialVideo.posterSizes }} description="Prof Harti (أيوب حارتي) — الفيزياء والكيمياء، من الأولى إعدادي حتى الثانية باك. « ما تخافش من الفيزياء ». Concept de site vitrine.">
+<Base preload={portrait.src} description="Prof Harti (أيوب حارتي) — الفيزياء والكيمياء، من الأولى إعدادي حتى الثانية باك. « ما تخافش من الفيزياء ». Concept de site vitrine.">
 
   <!-- ============ HERO ============ -->
   <section class="hero" aria-labelledby="hero-title">
+    <!-- Backdrop key: only pixels where blue clearly exceeds red (the photo's blue studio backdrop) are re-toned to a
+         wine ramp that keeps their luminance. Skin, the white shirt, the black suit and the warm glow behind his head
+         fall outside the key and stay exactly as photographed. -->
+    <svg class="sr-only" aria-hidden="true" focusable="false" width="0" height="0">
+      <filter id="wine-backdrop" color-interpolation-filters="sRGB" x="0" y="0" width="1" height="1" primitiveUnits="objectBoundingBox">
+        <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -5 0 5 0 0.05" result="blueKey" />
+        <!-- fringe key: neutral-to-cool greys (where the blue met the gold glow), mid-luminance only -->
+        <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -6 0 6 0 0.3" result="coolish" />
+        <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.3 0.59 0.11 0 0" result="lum" />
+        <feComponentTransfer in="lum" result="midLum"><feFuncA type="table" tableValues="0 0 0.2 0.7 0.8 0.4 0.1 0 0" /></feComponentTransfer>
+        <!-- the white shirt (centre, lower half) is excluded spatially, so its cool shadows are never touched -->
+        <feImage href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cfilter id='b'%3E%3CfeGaussianBlur stdDeviation='2.5'/%3E%3C/filter%3E%3Cpath filter='url%28%23b%29' fill-rule='evenodd' fill='%23fff' d='M-10-10H110V110H-10ZM34 44H66V110H34Z'/%3E%3C/svg%3E" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="notShirt" />
+        <feComposite in="coolish" in2="midLum" operator="in" result="fringeLum" />
+        <feComposite in="fringeLum" in2="blueKey" operator="over" result="anyKey" />
+        <feComposite in="anyKey" in2="notShirt" operator="in" result="key" />
+        <feColorMatrix in="SourceGraphic" type="matrix" values="0.12 0.16 0.72 0 0  0.03 0.05 0.17 0 0  0.04 0.06 0.21 0 0  0 0 0 1 0" result="wine" />
+        <feComposite in="wine" in2="key" operator="in" result="wineKeyed" />
+        <feMerge><feMergeNode in="SourceGraphic" /><feMergeNode in="wineKeyed" /></feMerge>
+      </filter>
+    </svg>
     <div class="hero__grid">
-      <figure class="hero__media" id="hero-video">
-        <div class="poster" data-embed="yt" data-id={officialVideo.id} data-title={`Vidéo officielle YouTube — ${officialVideo.titleAr}`} data-poster>
-          <div class="poster__frame" data-embed-slot>
-            <button class="poster__btn" type="button" data-embed-play>
-              <span class="sr-only" lang="fr">Lire la vidéo officielle : {officialVideo.titleAr}</span>
-              <span class="poster__photo" aria-hidden="true">
-                <img src={officialVideo.poster} srcset={officialVideo.posterSrcset} sizes={officialVideo.posterSizes} alt="" width="1920" height="1080" fetchpriority="high" decoding="async" onerror={posterOnError} />
-              </span>
-              <span class="poster__fallback" aria-hidden="true">
-                <span class="ruqaa poster__fallback-sig">{quotes.signOff.ar}</span>
-                <span class="poster__fallback-ar">{officialVideo.titleAr}</span>
-              </span>
-              <span class="poster__play" aria-hidden="true">
-                <span class="poster__disc"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M8 5v14l11-7z" fill="currentColor" /></svg></span>
-                <span class="poster__playtxt"><b>{officialVideo.titleAr}</b><span class="ltr">YouTube · {officialVideo.duration}</span></span>
-              </span>
-            </button>
-          </div>
-        </div>
-        <figcaption class="credit" lang="fr" dir="ltr">Image : vidéo officielle YouTube — Prof Harti</figcaption>
+      <figure class="hero__portrait" data-portrait>
+        <span class="portrait__img">
+          <img src={portrait.src} alt={portrait.alt} width={portrait.width} height={portrait.height} fetchpriority="high" decoding="async" referrerpolicy="no-referrer" onerror={portraitOnError} />
+        </span>
+        <span class="portrait__fallback" aria-hidden="true"><span class="ruqaa">{quotes.signOff.ar}</span></span>
+        <figcaption class="credit" lang="fr" dir="ltr"><a href={portrait.page} target="_blank" rel="noopener noreferrer">{portrait.credit}<span class="sr-only"> (nouvel onglet)</span></a></figcaption>
       </figure>
 
       <div class="hero__text">
@@ -57,6 +64,22 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
             <span class="sr-only">على {primaryVia} (نافذة جديدة)</span>
           </a>
           <a class="hero__more" href="#offre">اكتشف «عرض التفوق»</a>
+        </div>
+
+        <!-- The official video: its own, clearly labelled play control (youtube-nocookie loads only on click) -->
+        <div class="vcard" id="hero-video" data-embed="yt" data-id={officialVideo.id} data-title={`Vidéo officielle YouTube — ${officialVideo.titleAr}`} data-poster>
+          <div class="vcard__slot" data-embed-slot>
+            <button class="vcard__btn" type="button" data-embed-play>
+              <span class="sr-only" lang="fr">Lire la vidéo officielle : {officialVideo.titleAr}</span>
+              <span class="vcard__thumb" aria-hidden="true">
+                <img src={officialVideo.thumb} alt="" width="320" height="180" loading="lazy" decoding="async" onerror={thumbOnError} />
+                <span class="poster__fallback">▶</span>
+                <span class="poster__disc"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M8 5v14l11-7z" fill="currentColor" /></svg></span>
+              </span>
+              <span class="vcard__txt" aria-hidden="true"><b>▶ عرض التفوق</b><span>الفيديو الرسمي <span class="ltr">· YouTube · {officialVideo.duration}</span></span></span>
+            </button>
+          </div>
+          <p class="vcard__credit credit-v" lang="fr" dir="ltr">Image : vidéo officielle YouTube — Prof Harti</p>
         </div>
       </div>
     </div>
@@ -269,49 +292,36 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
 
 <style>
   /* ================= HERO =================
-     One oxblood field, no split. YouTube's own frame stays in natural colour (a light warm grade only).
-     Its light studio backdrop is multiplied onto a champagne → oxblood light, so the backdrop becomes a glow
-     behind his head and its edges become the page field itself: the face is the light source. */
+     His official Facebook portrait, large, anchored to the bottom edge, face in the upper third. No circle, no box:
+     directional linear fades dissolve it into the wine field; the studio glow behind his head is the light source.
+     Its blue backdrop is re-toned to wine by the #wine-backdrop key (face, shirt, suit and glow untouched).
+     Displayed at or below its native 1254 px so the detail holds; a 3.5 % film grain sits over the hero. */
   .hero { position: relative; overflow: hidden; isolation: isolate; background: var(--ink); }
   .hero::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-    background: radial-gradient(70% 42% at 50% 22%, rgba(90, 26, 39, 0.55), transparent 72%); }
+    background: radial-gradient(80% 45% at 50% 22%, rgba(125, 19, 37, 0.5), transparent 72%); }
+  .hero::after { content: ''; position: absolute; inset: 0; z-index: 5; pointer-events: none; opacity: 0.035; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
   .hero__grid { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); }
-  .hero__media { margin: 0; position: relative; }
-  .poster__frame { position: relative; height: clamp(380px, 56svh, 540px); overflow: hidden; }
-  .poster__btn { all: unset; position: absolute; inset: 0; display: block; cursor: pointer; }
-  .poster__btn:focus-visible { outline: 2px solid var(--signal); outline-offset: -6px; }
-  .poster__photo {
-    --halo: radial-gradient(58% 46% at 50% 31%, #f4ebdd 0%, #efe3d0 17%, #e2cdb0 29%, #cbab86 39%, #ab8865 48%, #876349 57%, #62402f 66%, #43251f 75%, #2c1316 86%, var(--ink) 100%);
-    position: absolute; inset: 0; overflow: hidden; isolation: isolate; background: var(--halo);
-    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 9%, #000 54%, transparent 90%);
-    mask-image: linear-gradient(180deg, transparent 0, #000 9%, #000 54%, transparent 90%);
-  }
-  .poster__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; mix-blend-mode: multiply;
-    filter: sepia(0.1) saturate(1.04) contrast(1.03); transform: translateY(4%) scale(1.85); transform-origin: 50% 0; }
+  .hero__portrait { position: relative; margin: 0; height: clamp(400px, 64svh, 580px); overflow: hidden; }
+  .portrait__img { position: absolute; inset: 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 5%, #000 64%, transparent 96%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 5%, #000 64%, transparent 96%);
+    mask-composite: intersect; }
+  .portrait__img img { position: absolute; top: 0; left: 50%; height: 100%; width: auto; max-width: none; aspect-ratio: 1; transform: translateX(-51%); filter: url(#wine-backdrop) saturate(1.02); }
   @media (prefers-reduced-motion: no-preference) {
-    .poster__photo img { animation: settle 2.4s var(--ease) both; }
-    @keyframes settle { from { opacity: 0; transform: translateY(4%) scale(1.92); } to { opacity: 1; transform: translateY(4%) scale(1.85); } }
+    .portrait__img img { animation: settle 1.6s var(--ease) both; }
+    @keyframes settle { from { transform: translateX(-51%) scale(1.025); } to { transform: translateX(-51%) scale(1); } }
   }
-  .poster__fallback { display: none; position: absolute; inset: 0; background: radial-gradient(55% 45% at 50% 36%, var(--wine), var(--ink) 80%); place-content: center; justify-items: center; text-align: center; gap: 0.6rem; padding-bottom: 18%; }
-  .poster__fallback-sig { font-size: clamp(3rem, 14vw, 5.5rem); line-height: 1.4; color: var(--gold); transform: rotate(-3deg); }
-  .poster__fallback-ar { font-weight: 600; color: var(--dim); font-size: 1rem; }
-  :global(.is-fallback) .poster__fallback { display: grid; }
-  :global(.is-fallback) .poster__photo { display: none; }
-  /* The play control: quiet, with his yellow as the only bright point of the hero */
-  .poster__play { position: absolute; top: 63%; left: var(--gutter); display: flex; align-items: center; gap: 0.65rem; padding: 0.3rem 0.95rem 0.3rem 0.3rem; background: rgba(22, 10, 13, 0.72); border: 1px solid rgba(217, 191, 146, 0.28); border-radius: 999px; color: var(--chalk); backdrop-filter: blur(8px); transition: background 0.3s var(--ease), border-color 0.3s var(--ease); }
-  .poster__disc { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--signal); color: var(--ink); flex: none; }
-  .poster__disc svg { margin-left: 2px; }
-  .poster__playtxt { display: grid; line-height: 1.3; }
-  .poster__playtxt b { font-size: 0.82rem; font-weight: 700; }
-  .poster__playtxt .ltr { font-size: 0.66rem; color: var(--dim); letter-spacing: 0.06em; }
-  .poster__btn:hover .poster__play { background: rgba(22, 10, 13, 0.92); border-color: var(--gold); }
-  .poster.is-loaded .poster__frame { height: auto; aspect-ratio: 16 / 9; background: #000; }
-  .hero:has(.is-loaded) .hero__text { margin-top: 1.5rem; }
-  .poster__frame :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-  .credit { position: absolute; top: 1rem; left: 0.3rem; z-index: 3; font-size: 0.62rem; color: rgba(196, 180, 164, 0.75); writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 500; letter-spacing: 0.04em; }
-  .poster.is-loaded + .credit { position: static; padding: 0.4rem var(--gutter); writing-mode: horizontal-tb; transform: none; }
+  .portrait__fallback { display: none; position: absolute; inset: 0; place-content: center; text-align: center; background: radial-gradient(55% 45% at 50% 38%, var(--wine), var(--ink) 80%); padding-bottom: 18%; }
+  .portrait__fallback .ruqaa { font-size: clamp(3rem, 14vw, 5.5rem); color: var(--gold); line-height: 1.4; transform: rotate(-3deg); }
+  .hero__portrait.is-fallback .portrait__fallback { display: grid; }
+  .hero__portrait.is-fallback .portrait__img { display: none; }
+  .credit { position: absolute; top: 1rem; left: 0.3rem; z-index: 6; font-size: 0.62rem; writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 500; letter-spacing: 0.04em; }
+  .credit a { color: rgba(205, 185, 168, 0.8); text-decoration: none; display: inline-block; padding: 0.3rem 0; }
+  .credit a:hover { color: var(--chalk); text-decoration: underline; }
 
-  .hero__text { position: relative; z-index: 4; padding-inline: var(--gutter); margin-top: -5.2rem; padding-bottom: clamp(3rem, 8vw, 4.5rem); text-align: right; }
+  .hero__text { position: relative; z-index: 4; padding-inline: var(--gutter); margin-top: -5.4rem; padding-bottom: clamp(3rem, 8vw, 4.5rem); text-align: right; }
   .hero__sig { margin: 0 0 0.05em; font-size: clamp(2.4rem, 10.5vw, 3rem); line-height: 1.1; color: var(--gold); transform: rotate(-4deg); transform-origin: 100% 100%; text-align: right; padding-inline: 0.4em 0.15em; position: relative; z-index: 2; }
   .hero__word { margin: 0; font-size: clamp(4.4rem, 23vw, 6.6rem); }
   .hero__word .word { display: block; text-align: right; line-height: 0.84; }
@@ -332,36 +342,58 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
   .hero__ctas .btn { flex: 1 1 100%; }
   .hero__more { color: var(--chalk); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--brass); padding-block: 0.35rem; margin-inline: auto; transition: color 0.3s var(--ease), border-color 0.3s var(--ease); }
   .hero__more:hover { color: var(--gold); border-color: var(--gold); }
+
+  /* The official video as its own play control */
+  .vcard { margin-top: 2rem; padding-top: 1.4rem; border-top: 1px solid var(--line); }
+  .vcard__slot { position: relative; }
+  .vcard__btn { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 1rem; width: 100%; cursor: pointer; }
+  .vcard__btn:focus-visible { outline: 2px solid var(--signal); outline-offset: 4px; }
+  .vcard__thumb { position: relative; flex: none; width: 112px; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius); background: var(--wine); border: 1px solid var(--line-strong); }
+  .vcard__thumb img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.35) brightness(0.72); }
+  .vcard__thumb::after { content: ""; position: absolute; inset: 0; background: rgba(125, 19, 37, 0.35); mix-blend-mode: multiply; }
+  .vcard__thumb .poster__disc { position: absolute; inset: 0; margin: auto; }
+  .poster__disc { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--signal); color: var(--ink); flex: none; }
+  .poster__disc svg { margin-left: 2px; }
+  .vcard__thumb .poster__fallback { display: none; position: absolute; inset: 0; place-content: center; color: var(--gold); font-size: 1.2rem; }
+  :global(.is-fallback) .vcard__thumb img { display: none; }
+  :global(.is-fallback) .vcard__thumb .poster__fallback { display: grid; }
+  .vcard__txt { display: grid; gap: 0.1rem; text-align: right; }
+  .vcard__txt b { font-size: 1.1rem; font-weight: 700; color: var(--chalk); }
+  .vcard__txt > span { font-size: 0.82rem; color: var(--dim); }
+  .vcard__btn:hover .vcard__txt b { color: var(--gold); }
+  .vcard__credit { margin: 0.6rem 0 0; font-size: 0.62rem; color: var(--dim); opacity: 0.8; text-align: right; }
+  .vcard.is-loaded .vcard__slot { aspect-ratio: 16 / 9; background: #000; }
+  .vcard__slot :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
   @media (prefers-reduced-motion: no-preference) {
     .hero__text > * { animation: rise 1s var(--ease) both; }
     .hero__text > :nth-child(2) { animation-delay: 80ms; } .hero__text > :nth-child(3) { animation-delay: 180ms; }
-    .hero__text > :nth-child(4) { animation-delay: 260ms; } .hero__text > :nth-child(5) { animation-delay: 320ms; }
+    .hero__text > :nth-child(4) { animation-delay: 260ms; } .hero__text > :nth-child(5) { animation-delay: 320ms; } .hero__text > :nth-child(6) { animation-delay: 380ms; }
     @keyframes rise { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
   }
 
   @media (min-width: 640px) {
     .hero__ctas .btn { flex: 0 0 auto; }
     .hero__more { margin-inline: 0; }
+    .vcard { max-width: 30rem; margin-inline-end: auto; }
   }
 
   @media (min-width: 960px) {
-    .hero::before { background: radial-gradient(48% 70% at 30% 34%, rgba(90, 26, 39, 0.6), transparent 72%); }
-    .hero__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: min(calc(100svh - var(--header-h) - 30px), 880px); }
-    .hero__media { position: absolute; inset-block: 0; left: 0; width: 60%; }
-    .poster, .poster__frame { height: 100%; }
-    .poster__photo { --halo: radial-gradient(38% 50% at 46% 32%, #f4ebdd 0%, #efe3d0 17%, #e2cdb0 29%, #cbab86 39%, #ab8865 48%, #876349 57%, #62402f 66%, #43251f 75%, #2c1316 86%, var(--ink) 100%);
-      -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 56%, transparent 92%); mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 56%, transparent 92%); }
-    .poster__photo img { object-position: 50% 0; transform: translateY(3%) scale(1.5); }
-    @media (prefers-reduced-motion: no-preference) { @keyframes settle { from { opacity: 0; transform: translateY(3%) scale(1.56); } to { opacity: 1; transform: translateY(3%) scale(1.5); } } }
-    .poster.is-loaded { position: absolute; inset: 8% 4% auto 6%; height: auto; }
-    .poster.is-loaded .poster__frame { height: auto; }
-    .poster__play { top: auto; bottom: 24%; left: clamp(2rem, 6vw, 6rem); }
-    .credit { left: 0.6rem; top: 1.2rem; }
-    .hero__text { grid-column: 1; grid-row: 1; margin: 0; align-self: center; padding: clamp(3rem, 6vh, 5rem) var(--gutter) clamp(3rem, 6vh, 5rem) 0; max-width: 42rem; justify-self: start; width: 100%; margin-right: max(0px, calc((100vw - var(--max)) / 2)); }
+    .hero::before { background: radial-gradient(42% 70% at 28% 38%, rgba(125, 19, 37, 0.5), transparent 72%); }
+    .hero__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: clamp(620px, calc(100svh - var(--header-h) - 34px), 1000px); }
+    /* Portrait: as tall as the hero, square, anchored to the bottom edge (its chest crop meets the fold) */
+    .hero__portrait { position: absolute; inset-block: 0; left: clamp(0px, 3vw, 4rem); height: auto; aspect-ratio: 1; max-width: 64%; }
+    .portrait__img {
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 22%, #000 70%, transparent 97%), linear-gradient(180deg, transparent 0, #000 7%, #000 90%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0, #000 22%, #000 70%, transparent 97%), linear-gradient(180deg, transparent 0, #000 7%, #000 90%, transparent 100%); }
+    .portrait__img img { top: auto; bottom: 0; transform: translateX(-50%); }
+    @media (prefers-reduced-motion: no-preference) { @keyframes settle { from { transform: translateX(-50%) scale(1.02); } to { transform: translateX(-50%) scale(1); } } }
+    .portrait__img img { transform-origin: 50% 100%; }
+    .credit { left: 1rem; right: auto; top: auto; bottom: 0.6rem; writing-mode: horizontal-tb; transform: none; }
+    .hero__text { grid-column: 1; grid-row: 1; margin: 0; align-self: center; padding: clamp(2.5rem, 5vh, 4rem) var(--gutter) clamp(2.5rem, 5vh, 4rem) 0; max-width: 40rem; justify-self: start; width: 100%; margin-right: max(0px, calc((100vw - var(--max)) / 2)); }
     .hero__sig { font-size: clamp(3rem, 3.6vw, 4rem); }
-    .hero__word { font-size: clamp(6rem, 9.2vw, 9.6rem); }
-    .hero__tag p { font-size: clamp(1.6rem, 2vw, 2.1rem); }
-    .hero:has(.is-loaded) .hero__text { margin-top: 0; }
+    .hero__word { font-size: clamp(5.6rem, 8.6vw, 9rem); }
+    .hero__tag p { font-size: clamp(1.5rem, 1.9vw, 2rem); }
   }
 
   /* ================= BAND ================= */
@@ -375,7 +407,7 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
 
   /* ================= 01 PROF ================= */
   .prof { background: var(--wine); padding-block: var(--section); position: relative; }
-  .prof::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(60% 50% at 100% 0%, rgba(217, 191, 146, 0.07), transparent 70%); }
+  .prof::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(60% 50% at 100% 0%, rgba(184, 35, 59, 0.28), transparent 70%); }
   .prof .wrap { position: relative; }
   .prof .eyebrow { color: rgba(244, 236, 225, 0.78); }
   .prof__quote { font-size: clamp(2rem, 1.2rem + 4.2vw, 4.6rem); line-height: 1.4; font-weight: 700; max-width: 17ch; padding-inline-start: clamp(1rem, 2.5vw, 2rem); border-inline-start: 2px solid var(--claret); text-wrap: balance; }
@@ -383,7 +415,7 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
   .q { color: var(--brass); font-weight: 400; }
   .prof .gloss, .prof .src { color: rgba(244, 236, 225, 0.76); }
   .prof .gloss { padding-inline-start: clamp(1rem, 2.5vw, 2rem); }
-  .facts { margin-top: clamp(3.5rem, 8vw, 6rem); border-top: 1px solid rgba(217, 191, 146, 0.4); }
+  .facts { margin-top: clamp(3.5rem, 8vw, 6rem); border-top: 1px solid rgba(226, 199, 153, 0.4); }
   .fact { display: grid; gap: 0.6rem 3rem; padding-block: clamp(1.8rem, 4vw, 2.6rem); border-bottom: 1px solid rgba(244, 236, 225, 0.12); }
   @media (min-width: 860px) { .fact { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); align-items: start; } .fact__big { font-size: clamp(2.4rem, 0.8rem + 2.8vw, 3.8rem); } }
   .fact__big { margin: 0; font-size: clamp(2.4rem, 1.6rem + 3.4vw, 4.4rem); white-space: nowrap; color: var(--gold); text-align: right; font-weight: 800; }
@@ -412,7 +444,7 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
   .reel__frame { position: relative; height: clamp(360px, 52vw, 430px); border-radius: var(--radius); overflow: hidden; background: var(--ink-2); border: 1px solid var(--line); }
   .reel.is-loaded .reel__frame { height: 720px; background: #fff; }
   .reel__frame :global(iframe) { width: 100%; height: 100%; border: 0; display: block; }
-  .reel__btn { all: unset; box-sizing: border-box; position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 0.45rem; padding: 1.4rem; cursor: pointer; background: linear-gradient(180deg, transparent 35%, rgba(59, 20, 28, 0.85)); transition: background 0.4s var(--ease); }
+  .reel__btn { all: unset; box-sizing: border-box; position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 0.45rem; padding: 1.4rem; cursor: pointer; background: linear-gradient(180deg, transparent 35%, rgba(74, 18, 32, 0.9)); transition: background 0.4s var(--ease); }
   .reel__btn:focus-visible { outline: 2px solid var(--signal); outline-offset: -5px; }
   .reel__num { position: absolute; top: 1rem; left: 1.2rem; font-size: 0.75rem; font-style: normal; font-stretch: 100%; font-weight: 600; letter-spacing: 0.14em; color: var(--gold); }
   .reel__board { position: absolute; top: 3.6rem; inset-inline: 1.4rem; background: var(--board); color: var(--board-ink); border-radius: 2px; padding: 0.8rem 1rem 1.4rem; display: grid; gap: 0.3rem; border: 4px solid #cfd0d4; box-shadow: 0 0 0 2px rgba(255, 45, 74, 0.55), 0 0 22px rgba(255, 45, 74, 0.18); transform: rotate(-1deg); transition: transform 0.5s var(--ease); }
@@ -430,12 +462,12 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
   .lives__grid > * { min-width: 0; }
   @media (min-width: 1000px) { .lives__grid { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); } .lives__clock { position: sticky; top: calc(var(--header-h) + 2rem); align-self: start; } }
   .lives__clock { display: grid; justify-items: start; }
-  .lives__on { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid var(--claret); color: #f0b9c2; font-family: var(--f-word); font-weight: 600; font-stretch: 100%; font-size: 0.7rem; letter-spacing: 0.2em; padding: 0.25rem 0.7rem; border-radius: var(--radius); }
-  .lives__on i { width: 6px; height: 6px; border-radius: 50%; background: #e0566c; }
+  .lives__on { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid var(--red); background: var(--red); color: var(--chalk); font-family: var(--f-word); font-weight: 600; font-stretch: 100%; font-size: 0.7rem; letter-spacing: 0.2em; padding: 0.25rem 0.7rem; border-radius: var(--radius); }
+  .lives__on i { width: 6px; height: 6px; border-radius: 50%; background: var(--chalk); }
   @media (prefers-reduced-motion: no-preference) { .lives__on i { animation: blink 1.6s steps(2) infinite; } .lives__colon { animation: blink 2.4s steps(2) infinite; } @keyframes blink { 50% { opacity: 0.2; } } }
   .lives__time { font-size: clamp(3.6rem, 17vw, 13rem); font-stretch: 100%; font-weight: 800; max-width: 100%; color: var(--gold); line-height: 0.9; margin-top: 0.8rem; }
   @media (min-width: 1000px) { .lives__time { font-size: clamp(6rem, 11vw, 12rem); } .lives .h2 { font-size: clamp(2.2rem, 3.4vw, 3.6rem); } }
-  .sched { list-style: none; margin: 2.6rem 0 0; padding: 0; border-top: 1px solid rgba(217, 191, 146, 0.45); }
+  .sched { list-style: none; margin: 2.6rem 0 0; padding: 0; border-top: 1px solid rgba(226, 199, 153, 0.45); }
   .sched li { display: grid; grid-template-columns: 6.6rem 1fr; gap: 0.15rem 1.4rem; padding-block: 1.2rem; border-bottom: 1px solid var(--line); }
   .sched__time { grid-row: span 2; color: var(--gold); font-size: 1.1rem; font-weight: 700; font-stretch: 100%; text-align: right; line-height: 1.4; }
   .sched__ar { font-size: clamp(1.2rem, 1rem + 1vw, 1.5rem); font-weight: 700; line-height: 1.45; }
@@ -444,35 +476,36 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
   .sched__fr .src::before { content: '· '; }
   .lives__joke { margin-top: 2.4rem; font-size: clamp(1.4rem, 1.1rem + 1.4vw, 2rem); font-weight: 700; color: var(--gold); }
 
-  /* ================= 04 OFFRE — ivory page, oxblood ink, one yellow stroke ================= */
-  .offre { background: var(--ivory); color: var(--on-ivory); padding-block: var(--section); position: relative; }
-  .offre .eyebrow, .offre .src, .offre .dim { color: var(--on-ivory-dim); }
-  .offre .eyebrow__num { color: var(--oxblood); }
-  .offre__title { font-size: clamp(3.6rem, 1.5rem + 11vw, 10rem); line-height: 1.2; font-weight: 800; color: var(--oxblood); letter-spacing: 0; }
+  /* ================= 04 OFFRE — the crimson page: his programme in ivory, one yellow stroke ================= */
+  .offre { background: var(--red-deep); color: var(--chalk); padding-block: var(--section); position: relative; }
+  .offre::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(60% 60% at 85% 10%, rgba(184, 35, 59, 0.45), transparent 70%); }
+  .offre .wrap { position: relative; }
+  .offre .eyebrow, .offre .src, .offre .dim { color: rgba(246, 238, 227, 0.8); }
+  .offre .eyebrow__num { color: var(--gold); }
+  .offre__title { font-size: clamp(3.6rem, 1.5rem + 11vw, 10rem); line-height: 1.2; font-weight: 800; color: var(--chalk); letter-spacing: 0; }
   .offre__title::after { content: ''; display: block; width: clamp(4rem, 12vw, 9rem); height: 3px; margin-top: 0.15em; background: var(--signal); }
   .offre__open { font-size: clamp(1.2rem, 1rem + 1vw, 1.6rem); font-weight: 700; margin-top: 1.4rem; }
-  .offre__open mark { background: none; color: var(--oxblood); }
-  .offre__list { list-style: none; margin: clamp(2.5rem, 6vw, 4rem) 0 0; padding: 0; border-top: 1px solid var(--oxblood); }
-  .offre__list li { display: grid; grid-template-columns: 2.6rem 1fr; gap: 0.2rem 1rem; padding-block: 1.4rem; border-bottom: 1px solid rgba(90, 26, 39, 0.18); }
+  .offre__open mark { background: none; color: var(--gold); }
+  .offre__list { list-style: none; margin: clamp(2.5rem, 6vw, 4rem) 0 0; padding: 0; border-top: 1px solid rgba(246, 238, 227, 0.55); }
+  .offre__list li { display: grid; grid-template-columns: 2.6rem 1fr; gap: 0.2rem 1rem; padding-block: 1.4rem; border-bottom: 1px solid rgba(246, 238, 227, 0.18); }
   @media (min-width: 860px) { .offre__list li { grid-template-columns: 4rem 1.3fr 1fr; align-items: baseline; } }
-  .offre__n { font-size: 1.8rem; line-height: 1; color: var(--brass); grid-row: span 2; }
+  .offre__n { font-size: 1.8rem; line-height: 1; color: var(--gold); grid-row: span 2; }
   .offre__ar { font-size: clamp(1.4rem, 1.1rem + 1.6vw, 2.2rem); font-weight: 700; line-height: 1.4; }
-  .offre__fr { font-size: 0.92rem; color: var(--on-ivory-dim); }
+  .offre__fr { font-size: 0.92rem; color: rgba(246, 238, 227, 0.8); }
   @media (min-width: 860px) { .offre__n { grid-row: auto; } }
   .offre__foot { margin-top: 3rem; display: grid; gap: 1.6rem; }
   .offre__step { font-size: 1.15rem; font-weight: 600; margin: 0; }
-  .offre__step .dim { color: var(--on-ivory); }
+  .offre__step .dim { color: var(--chalk); }
   .offre__ctas { display: flex; flex-wrap: wrap; gap: 0.8rem; }
-  .btn--dark { background: var(--oxblood); color: var(--ivory); border-color: var(--oxblood); }
-  .btn--dark:hover { background: var(--on-ivory); border-color: var(--on-ivory); color: var(--ivory); }
-  .btn--line { background: transparent; color: var(--oxblood); border-color: rgba(90, 26, 39, 0.45); }
-  .btn--line:hover { background: transparent; border-color: var(--oxblood); color: var(--oxblood); }
-  .offre__note { font-size: 0.85rem; margin: 0; color: var(--on-ivory-dim); }
+  .btn--dark { background: var(--chalk); color: var(--red-deep); border-color: var(--chalk); }
+  .btn--dark:hover { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+  .btn--line { background: transparent; color: var(--chalk); border-color: rgba(246, 238, 227, 0.5); }
+  .btn--line:hover { background: transparent; border-color: var(--chalk); color: var(--chalk); }
+  .offre__note { font-size: 0.85rem; margin: 0; color: rgba(246, 238, 227, 0.8); }
 
   /* ================= 05 INSCRIPTION — continues the ivory page after a hairline ================= */
-  .ins { padding-block: 0 var(--section); background: var(--ivory); color: var(--on-ivory); }
-  .ins .wrap { position: relative; padding-top: var(--section); }
-  .ins .wrap::before { content: ''; position: absolute; top: 0; inset-inline: var(--gutter); height: 1px; background: rgba(90, 26, 39, 0.25); }
+  .ins { padding-block: var(--section); background: var(--ivory); color: var(--on-ivory); }
+  
   .ins .eyebrow { color: var(--on-ivory-dim); }
   .ins .eyebrow__num { color: var(--oxblood); }
   .ins .h2 mark { color: var(--oxblood); }
@@ -485,23 +518,23 @@ const posterOnError = `if(!this.dataset.f){this.dataset.f='1';this.removeAttribu
   .steps p { margin: 0; color: var(--on-ivory-dim); font-size: 0.96rem; line-height: 1.65; }
 
   /* ================= 06 CONTACT ================= */
-  .contact { padding-block: var(--section) clamp(3.5rem, 7vw, 5.5rem); background: radial-gradient(70% 50% at 50% 100%, rgba(90, 26, 39, 0.55), transparent 72%), var(--ink); }
+  .contact { padding-block: var(--section) clamp(3.5rem, 7vw, 5.5rem); background: radial-gradient(70% 50% at 50% 100%, rgba(125, 19, 37, 0.55), transparent 72%), var(--ink); }
   .contact__title { font-size: clamp(2.4rem, 1.2rem + 6vw, 6.4rem); font-weight: 800; line-height: 1.3; text-wrap: balance; }
   .contact__title mark { background: none; color: var(--gold); }
   .cwall { margin-top: clamp(2.5rem, 5vw, 3.5rem); display: grid; gap: 0.75rem; }
   @media (min-width: 860px) { .cwall { grid-template-columns: 1.4fr 1fr 1fr; } }
   .cbtn { position: relative; display: grid; align-content: space-between; gap: 1.4rem; min-height: 128px; padding: 1.3rem 1.5rem; text-decoration: none; border: 1px solid var(--line-strong); border-radius: var(--radius); transition: border-color 0.35s var(--ease), background 0.35s var(--ease); }
-  .cbtn:hover { border-color: var(--gold); background: rgba(217, 191, 146, 0.04); }
+  .cbtn:hover { border-color: var(--gold); background: rgba(226, 199, 153, 0.04); }
   .cbtn__k { font-family: var(--f-word); font-size: 0.66rem; color: var(--dim); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; justify-self: end; }
   .cbtn__v { font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.3rem); font-weight: 700; line-height: 1.2; }
   .cbtn .arrow { position: absolute; bottom: 1.2rem; left: 1.4rem; font-size: 1.4rem; color: var(--gold); }
   .cbtn:hover .arrow { transform: translateX(-6px); }
-  .cbtn--primary { background: var(--gold); color: var(--ink); border-color: var(--gold); min-height: 164px; }
-  .cbtn--primary:hover { background: var(--chalk); border-color: var(--chalk); }
-  .cbtn--primary .cbtn__k { color: rgba(22, 10, 13, 0.72); }
+  .cbtn--primary { background: var(--red); color: var(--chalk); border-color: var(--red); min-height: 164px; }
+  .cbtn--primary:hover { background: var(--red-2); border-color: var(--red-2); }
+  .cbtn--primary .cbtn__k { color: rgba(246, 238, 227, 0.82); }
   .cbtn--primary .cbtn__v { font-size: clamp(2rem, 1.4rem + 2.6vw, 3rem); }
-  .cbtn--primary .arrow { color: var(--ink); }
-  .cbtn--strong { border-color: rgba(217, 191, 146, 0.5); }
+  .cbtn--primary .arrow { color: var(--chalk); }
+  .cbtn--strong { border-color: rgba(226, 199, 153, 0.5); }
   .also { margin-top: 1.4rem; display: flex; gap: 0.6rem; align-items: baseline; font-size: 0.95rem; }
   .also a { font-weight: 600; color: var(--chalk); padding: 0.4rem 0; }
   .also a:hover { color: var(--gold); }

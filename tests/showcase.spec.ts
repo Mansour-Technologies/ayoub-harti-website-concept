@@ -110,7 +110,7 @@ test('every external link is https, verified domain, new tab, rel noopener @mobi
   }
 });
 
-test('hero poster is the play button of the same official video and loads youtube-nocookie only on click @mobile', async ({ page }) => {
+test('hero video control plays the official video and loads youtube-nocookie only on click @mobile', async ({ page }) => {
   const embeds: string[] = [];
   page.on('request', (r) => { if (/youtube(-nocookie)?\.com\/embed/.test(r.url())) embeds.push(r.url()); });
   await page.goto('', { waitUntil: 'networkidle' });
@@ -120,31 +120,53 @@ test('hero poster is the play button of the same official video and loads youtub
   // the poster image is YouTube's own frame of that same video
   await expect(hero.locator('img')).toHaveAttribute('src', new RegExp(`^https://i\\.ytimg\\.com/vi(_webp)?/${VIDEO}/`));
   expect(await hero.locator('img').evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
-  await expect(page.locator('.hero .credit')).toHaveText('Image : vidéo officielle YouTube — Prof Harti');
+  await expect(page.locator('.hero .vcard__credit')).toHaveText('Image : vidéo officielle YouTube — Prof Harti');
+  await expect(hero).toContainText('عرض التفوق');
   await expect(hero.locator('iframe')).toHaveCount(0);
   expect(embeds).toEqual([]);
   await btn.click();
   await expect(hero.locator('iframe')).toHaveAttribute('src', new RegExp(`^https://www\\.youtube-nocookie\\.com/embed/${VIDEO}\\?`));
 });
 
-test('hero poster falls back to a typographic panel when YouTube images fail, and still plays @mobile', async ({ page }) => {
+test('video control falls back to a text thumbnail when YouTube images fail, and still plays @mobile', async ({ page }) => {
   await page.route(/i\.ytimg\.com/, (r) => r.abort());
   await page.goto('');
   const hero = page.locator('.hero [data-embed="yt"]');
   await expect(hero).toHaveClass(/is-fallback/);
   await expect(hero.locator('.poster__fallback')).toBeVisible();
+  await expect(page.locator('.hero__portrait')).not.toHaveClass(/is-fallback/);
   await hero.locator('button[data-embed-play]').click();
   await expect(hero.locator('iframe')).toHaveAttribute('src', /youtube-nocookie\.com\/embed\/bQRpHAGhIXw/);
 });
 
-test('hero photo keeps its natural colour (no duotone) and the hero is fully visible with reduced motion @mobile', async ({ page }) => {
+test('the first image is his official Facebook portrait, hotlinked from the Graph endpoint, credited and linked @mobile', async ({ page }) => {
+  await page.goto('', { waitUntil: 'networkidle' });
+  const first = page.locator('main img').first();
+  await expect(first).toHaveAttribute('src', 'https://graph.facebook.com/Prof.harti/picture?width=1080&height=1080');
+  expect(await first.evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth >= 1000)).toBe(true);
+  await expect(first).toBeInViewport();
+  const credit = page.locator('.hero__portrait .credit a');
+  await expect(credit).toHaveText(/^Photo : page Facebook officielle — Prof Harti/);
+  await expect(credit).toHaveAttribute('href', 'https://www.facebook.com/Prof.harti');
+});
+
+test('portrait falls back to a typographic panel when Facebook images fail @mobile', async ({ page }) => {
+  await page.route(/graph\.facebook\.com|fbcdn\.net/, (r) => r.abort());
+  await page.goto('');
+  await expect(page.locator('.hero__portrait')).toHaveClass(/is-fallback/);
+  await expect(page.locator('.portrait__fallback')).toBeVisible();
+  await expect(page.locator('.hero__word')).toBeVisible();
+});
+
+test('hero photo is not recoloured (no duotone) and the hero is fully visible with reduced motion @mobile', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('', { waitUntil: 'networkidle' });
-  const img = page.locator('.hero [data-embed="yt"] img');
+  const img = page.locator('.hero__portrait img');
   const look = await img.evaluate((i) => { const cs = getComputedStyle(i); return { blend: cs.mixBlendMode, filter: cs.filter, opacity: cs.opacity }; });
   // the old yellow duotone used mix-blend-mode: luminosity; colour-replacing blends and hue/greyscale filters are not allowed
   expect(['luminosity', 'color', 'hue', 'saturation']).not.toContain(look.blend);
-  expect(look.filter).not.toMatch(/grayscale|hue-rotate|invert/);
+  // only the backdrop key (#wine-backdrop) is allowed; it leaves skin, shirt and suit untouched
+  expect(look.filter).not.toMatch(/grayscale|hue-rotate|invert|sepia/);
   expect(look.opacity).toBe('1');
   for (const sel of ['.hero__word', '.hero__tag', '.hero__ctas .btn']) {
     await expect(page.locator(sel)).toBeVisible();
@@ -175,7 +197,7 @@ test('no horizontal overflow and no clipped content at the 8 target widths', asy
     const clipped = await page.evaluate(() => {
       const vw = document.documentElement.clientWidth;
       return Array.from(document.querySelectorAll('main *, header *, footer *'))
-        .filter((el) => !el.closest('[aria-hidden="true"], .poster, .band, .sr-only, [data-menu]'))
+        .filter((el) => !el.closest('[aria-hidden="true"], .poster, .portrait__img, .band, .sr-only, [data-menu]'))
         .filter((el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && (r.right > vw + 1 || r.left < -1); })
         .map((el) => `${el.tagName}.${(el as HTMLElement).className}`).slice(0, 5);
     });

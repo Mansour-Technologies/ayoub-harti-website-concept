@@ -66,17 +66,28 @@ export const formats = [
   { time: 'BAC', ar: 'نقط باك', fr: 'Les notes du Bac de ses élèves, chaque session', note: 'Stories à la une 2019 → 2026' },
 ] as const;
 
+/**
+ * Hero portrait: the profile picture of his verified Facebook page (black tuxedo, studio key light), chosen by the client.
+ * Hotlinked through Facebook's public page-picture endpoint (stable; it redirects to the CDN, 1254×1254 on 2026-11-27).
+ * Never rehosted and never committed. Needs his permission before any real use (see README).
+ */
+export const portrait = {
+  src: 'https://graph.facebook.com/Prof.harti/picture?width=1080&height=1080',
+  width: 1254,
+  height: 1254,
+  alt: 'Prof Ayoub Harti en smoking noir — photo de profil de sa page Facebook officielle',
+  credit: 'Photo : page Facebook officielle — Prof Harti',
+  page: 'https://www.facebook.com/Prof.harti',
+} as const;
+
 /** The one public, embeddable video on the official channel (verified 2026-11-26: channel tabs, RSS, uploads playlist, oEmbed). */
 export const officialVideo = {
   id: 'bQRpHAGhIXw',
   titleAr: 'للتسجيل في عرض التفوق',
   duration: '0:59',
-  /** Poster chosen in the asset dossier: YouTube's own 1920×1080 frame of this video, then the 1280×720 default. */
-  poster: 'https://i.ytimg.com/vi_webp/bQRpHAGhIXw/oar1.webp',
-  posterSrcset: 'https://i.ytimg.com/vi_webp/bQRpHAGhIXw/maxresdefault.webp 1280w, https://i.ytimg.com/vi_webp/bQRpHAGhIXw/oar1.webp 1920w',
-  /** The hero crop magnifies the frame ~1.5–1.9×, so request the 1920w frame on phones too (≈27 KB WebP). */
-  posterSizes: '(min-width: 960px) 90vw, 260vw',
-  posterFallback: 'https://i.ytimg.com/vi/bQRpHAGhIXw/maxresdefault.jpg',
+  /** YouTube's own small frame of this video, used as the thumbnail of its separate play control. */
+  thumb: 'https://i.ytimg.com/vi_webp/bQRpHAGhIXw/mqdefault.webp',
+  thumbFallback: 'https://i.ytimg.com/vi/bQRpHAGhIXw/mqdefault.jpg',
 } as const;
 
 /** Public Instagram reels (official embeds, loaded only after a click). */
