@@ -46,12 +46,12 @@ const rows = [
 
 <style>
   .board {
-    position: relative; background: var(--board); color: var(--board-ink); border-radius: 6px;
+    position: relative; background: var(--board); color: var(--board-ink); border-radius: 3px;
     padding: clamp(1rem, 3.5vw, 2.2rem); overflow: hidden;
     border: 9px solid #cfd0d4;
-    box-shadow: 0 0 0 2px #9a9ca3, 0 0 0 5px rgba(255, 45, 74, 0.9), 0 0 38px 8px rgba(255, 45, 74, 0.45), 0 0 120px 20px rgba(200, 16, 46, 0.25);
+    box-shadow: 0 0 0 1px #9a9ca3, 0 0 0 4px rgba(255, 45, 74, 0.55), 0 0 34px 4px rgba(255, 45, 74, 0.16), 0 30px 80px -30px rgba(0, 0, 0, 0.8);
   }
-  .board::before { content: ''; position: absolute; inset: 0; background: linear-gradient(115deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.65) 48%, rgba(255,255,255,0) 56%); pointer-events: none; }
+  .board::before { content: ''; position: absolute; inset: 0; background: linear-gradient(115deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.45) 48%, rgba(255,255,255,0) 56%); pointer-events: none; }
   .board__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; border-bottom: 2px solid rgba(23, 23, 26, 0.12); padding-bottom: 0.4rem; }
   .board__offer { color: var(--mk-red); font-size: clamp(1.35rem, 4.4vw, 2rem); line-height: 1.3; }
   .board__brand { color: var(--mk-blue); font-size: clamp(1.2rem, 3.6vw, 1.6rem); }

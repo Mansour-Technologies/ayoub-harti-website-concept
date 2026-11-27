@@ -2,25 +2,33 @@
 @import '@fontsource-variable/archivo/wdth-italic.css';
 @import '@fontsource-variable/caveat/wght.css';
 @import '@fontsource/aref-ruqaa/arabic-700.css';
+@import '@fontsource/mrs-saint-delafield/latin-400.css';
 
 :root {
-  /* Palette — sampled from his own identity: black stage + gold glow (banner), signal yellow (avatar),
-     burgundy suit (avatar, banner, video intro), poster red / LED red (live posters, whiteboard reels),
-     marker + highlighter colours of his summary sheets. */
-  --ink: #0a0807;
-  --ink-2: #13100e;
-  --ink-3: #1d1714;
-  --line: rgba(246, 240, 230, 0.13);
-  --line-strong: rgba(246, 240, 230, 0.3);
-  --chalk: #f6f0e6;
-  --dim: #bdb2a4;
-  --signal: #f7c51e;
-  --signal-2: #ffd84a;
-  --gold: #d9a441;
-  --bordeaux: #6a1627;
-  --bordeaux-2: #3c0c17;
-  --bordeaux-3: #8e2238;
-  --red: #c8102e;
+  /* Palette "Oxblood night" — taken from his own wardrobe and banner, then desaturated:
+     the burgundy tuxedo (avatar, banner, video intro) becomes the night field; the gold glow behind him on the
+     banner becomes champagne; his white shirt becomes ivory; his signal-yellow avatar background survives as a
+     rare accent (play control, focus, one underline), never as a flood. */
+  --ink: #160a0d;          /* oxblood night: page field */
+  --ink-2: #1e0d12;        /* one step up: alternate sections */
+  --ink-3: #2a1218;        /* raised surfaces */
+  --wine: #3b141c;         /* deep burgundy panels */
+  --claret: #a3354a;       /* thin editorial rules only (decor) */
+  --line: rgba(244, 236, 225, 0.12);
+  --line-strong: rgba(244, 236, 225, 0.26);
+  --chalk: #f4ece1;        /* ivory text, 16.4:1 on --ink */
+  --dim: #c4b4a4;          /* secondary text, 9.4:1 on --ink */
+  --gold: #d9bf92;         /* champagne: wordmark, numbers, primary button (11.3:1 on --ink) */
+  --brass: #a88758;        /* hairlines and small marks on dark */
+  --signal: #e9b949;       /* his yellow, softened — rare accent */
+  --ivory: #f4ece1;        /* light sections */
+  --ivory-2: #ebe0cf;
+  --oxblood: #5a1a27;      /* text/headlines on ivory, 11.6:1 */
+  --on-ivory: #24150f;     /* body text on ivory */
+  --on-ivory-dim: #5e4a3e; /* 7.4:1 on ivory */
+  --bordeaux: #5a1a27;
+  --bordeaux-2: #3b141c;
+  --red: #a3354a;
   --led: #ff2d4a;
   --board: #fbfaf6;
   --board-ink: #17171a;
@@ -36,15 +44,18 @@
   --f-word: 'Archivo Variable', 'Arial Black', 'Helvetica Neue', sans-serif;
   --f-hand: 'Caveat Variable', 'Bradley Hand', cursive;
   --f-ruqaa: 'Aref Ruqaa', 'Cairo Variable', serif;
+  --f-sig: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
 
   --fs-body: 1.0625rem;
   --fs-small: 0.875rem;
   --fs-micro: 0.75rem;
-  --fs-h2: clamp(2.2rem, 7.6vw, 5.2rem);
+  --fs-h2: clamp(2rem, 1.3rem + 3.6vw, 4.2rem);
   --gutter: clamp(1rem, 4.4vw, 3.5rem);
   --max: 1360px;
   --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
   --header-h: 60px;
+  --section: clamp(4.5rem, 3rem + 7vw, 9rem);
+  --radius: 2px;
   color-scheme: dark;
 }
 
@@ -66,14 +77,14 @@ body {
 img { max-width: 100%; display: block; }
 a { color: inherit; text-underline-offset: 0.2em; }
 p { margin: 0 0 1em; }
-h1, h2, h3 { margin: 0; line-height: 1.15; font-weight: 900; }
+h1, h2, h3 { margin: 0; line-height: 1.25; font-weight: 800; }
 button { font: inherit; color: inherit; cursor: pointer; }
-:focus-visible { outline: 3px solid var(--signal); outline-offset: 3px; }
-::selection { background: var(--signal); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+::selection { background: var(--gold); color: var(--ink); }
 
 .wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
 .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-.skip { position: absolute; inset-inline-start: 1rem; top: -100px; z-index: 100; background: var(--signal); color: var(--ink); padding: 0.6rem 1rem; font-weight: 800; }
+.skip { position: absolute; inset-inline-start: 1rem; top: -100px; z-index: 100; background: var(--gold); color: var(--ink); padding: 0.6rem 1rem; font-weight: 800; }
 .skip:focus { top: 0.5rem; }
 
 /* Latin passages inside the Arabic page */
@@ -81,33 +92,37 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .fr { direction: ltr; unicode-bidi: isolate; }
 .ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; }
 .dim { color: var(--dim); }
-.word { font-family: var(--f-word); font-style: italic; font-weight: 900; font-stretch: 112%; text-transform: uppercase; letter-spacing: -0.01em; line-height: 0.86; }
+/* His banner wordmark: heavy italic, slightly extended */
+.word { font-family: var(--f-word); font-style: italic; font-weight: 900; font-stretch: 112%; text-transform: uppercase; letter-spacing: -0.015em; line-height: 0.86; }
 .hand { font-family: var(--f-hand); font-weight: 700; }
 .ruqaa { font-family: var(--f-ruqaa); font-weight: 700; }
+.sig { font-family: var(--f-sig); font-weight: 400; font-style: normal; text-transform: none; letter-spacing: 0; }
+/* Small Latin caption voice */
+.caps { font-family: var(--f-word); font-style: normal; font-stretch: 100%; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; font-size: 0.7rem; }
 
-.eyebrow { display: flex; align-items: center; gap: 0.7rem; font-size: 0.8rem; font-weight: 700; color: var(--dim); margin: 0 0 1.2rem; }
-.eyebrow__num { font-family: var(--f-word); font-style: italic; font-weight: 900; color: var(--signal); font-size: 1rem; }
-.eyebrow__rule { flex: 0 0 2.5rem; height: 2px; background: currentColor; opacity: 0.5; }
-.eyebrow .fr { font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.72rem; }
+/* Section eyebrow: number · hairline · Arabic · French caps */
+.eyebrow { display: flex; flex-wrap: wrap; align-items: center; row-gap: 0.3rem; gap: 0.8rem; font-size: 0.9rem; font-weight: 700; color: var(--dim); margin: 0 0 1.6rem; }
+.eyebrow__num { font-family: var(--f-word); font-style: normal; font-stretch: 100%; font-weight: 600; color: var(--gold); font-size: 0.78rem; letter-spacing: 0.14em; }
+.eyebrow__rule { flex: 0 0 2.5rem; height: 1px; background: currentColor; opacity: 0.45; }
+.eyebrow .fr { font-family: var(--f-word); font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; font-size: 0.66rem; opacity: 0.85; }
 
-.h2 { font-size: var(--fs-h2); font-weight: 1000; letter-spacing: -0.01em; line-height: 1.12; }
-.h2 mark, mark.hl { background: none; color: var(--signal); }
-.gloss { font-size: 0.95rem; color: var(--dim); margin-top: 0.6rem; max-width: 58ch; }
-.src { display: block; font-size: var(--fs-micro); color: var(--dim); margin-top: 0.5rem; letter-spacing: 0.02em; }
+.h2 { font-size: var(--fs-h2); font-weight: 800; letter-spacing: 0; line-height: 1.3; text-wrap: balance; }
+.h2 mark, mark.hl { background: none; color: var(--gold); white-space: nowrap; }
+.gloss { font-size: 0.95rem; line-height: 1.65; color: var(--dim); margin-top: 0.9rem; max-width: 58ch; }
+.src { display: block; font-weight: 400; line-height: 1.55; font-size: var(--fs-micro); color: var(--dim); margin-top: 0.5rem; letter-spacing: 0.02em; opacity: 0.9; }
 
-/* Buttons */
+/* Buttons: tailored, square-shouldered, calm */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 0.7rem;
-  min-height: 52px; padding: 0.55rem 1.4rem; border: 2px solid var(--signal);
-  background: var(--signal); color: var(--ink); font-weight: 900; font-size: 1.05rem; text-decoration: none;
-  border-radius: 999px; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s;
-  box-shadow: 0 0 0 0 rgba(247, 197, 30, 0);
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.8rem;
+  min-height: 52px; padding: 0.55rem 1.6rem; border: 1px solid var(--gold);
+  background: var(--gold); color: var(--ink); font-weight: 800; font-size: 1.02rem; text-decoration: none;
+  border-radius: var(--radius); transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease);
 }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -8px rgba(247, 197, 30, 0.55); }
+.btn:hover { background: var(--chalk); border-color: var(--chalk); }
 .btn .fr { font-size: 0.78rem; font-weight: 700; opacity: 0.75; }
 .btn--ghost { background: transparent; color: var(--chalk); border-color: var(--line-strong); }
-.btn--ghost:hover { border-color: var(--signal); color: var(--signal); box-shadow: none; }
-.arrow { display: inline-block; transition: transform 0.25s var(--ease); }
+.btn--ghost:hover { background: transparent; border-color: var(--gold); color: var(--gold); }
+.arrow { display: inline-block; transition: transform 0.3s var(--ease); }
 .btn:hover .arrow { transform: translateX(-4px); }
 
 /* Reveal */
