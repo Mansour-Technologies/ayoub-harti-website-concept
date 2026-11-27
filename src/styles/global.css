@@ -35,10 +35,10 @@
   --mk-red: #d21f3c;
   --mk-blue: #1d4fd6;
   --mk-green: #0f8a4c;
-  --hl-yellow: #ffe94a;
-  --hl-orange: #ffb24d;
-  --hl-teal: #66dccb;
-  --hl-pink: #ff9cc2;
+  --hl-yellow: #f6e27e;
+  --hl-orange: #f7c27e;
+  --hl-teal: #93d8cc;
+  --hl-pink: #f2b5c9;
 
   --f-ar: 'Cairo Variable', 'Geeza Pro', 'Noto Sans Arabic', system-ui, sans-serif;
   --f-word: 'Archivo Variable', 'Arial Black', 'Helvetica Neue', sans-serif;
