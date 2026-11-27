@@ -1,29 +1,23 @@
-<!doctype html><html lang="ar" dir="ltr"><head><meta charset="utf-8"><style>
-@font-face{font-family:W;src:url(../node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-italic.woff2) format('woff2');font-weight:100 900;font-stretch:62% 125%;font-style:italic}
-@font-face{font-family:C;src:url(../node_modules/@fontsource-variable/cairo/files/cairo-arabic-wght-normal.woff2) format('woff2');font-weight:200 1000}
-@font-face{font-family:R;src:url(../node_modules/@fontsource/aref-ruqaa/files/aref-ruqaa-arabic-700-normal.woff2) format('woff2');font-weight:700}
-@font-face{font-family:H;src:url(../node_modules/@fontsource-variable/caveat/files/caveat-latin-wght-normal.woff2) format('woff2');font-weight:400 700}
-*{margin:0;box-sizing:border-box}
-body{width:1200px;height:630px;background:radial-gradient(60% 70% at 72% 40%,rgba(217,164,65,.28),transparent 70%),#0a0807;color:#f6f0e6;font-family:C;position:relative;overflow:hidden}
-.streak{position:absolute;width:520px;height:2px;background:linear-gradient(90deg,transparent,#d9a441,transparent);opacity:.7}
-.w{position:absolute;left:64px;top:70px;direction:ltr;font-family:W;font-style:italic;font-weight:900;font-stretch:112%;text-transform:uppercase;line-height:.84}
-.w .p{display:block;font-size:110px}
-.w .h{display:block;font-size:212px;background:linear-gradient(180deg,#ffe27a,#f7c51e 45%,#d9a441);-webkit-background-clip:text;color:transparent}
-.sig{position:absolute;left:330px;top:40px;font-family:H;font-weight:700;font-size:54px;color:#d9a441;transform:rotate(-8deg);direction:ltr}
-.ar{position:absolute;left:64px;top:388px;font-weight:800;font-size:46px;direction:rtl}
-.ar mark{background:none;color:#f6f0e6;box-shadow:inset 0 -.36em 0 rgba(200,16,46,.9)}
-.ar b{color:#d9a441}
-.board{position:absolute;left:820px;top:96px;width:310px;height:230px;direction:ltr;background:#fbfaf6;border:8px solid #cfd0d4;border-radius:6px;box-shadow:0 0 0 4px #ff2d4a,0 0 40px rgba(255,45,74,.55);transform:rotate(2deg);padding:14px 18px;color:#17171a}
-.board .o{font-family:R;color:#d21f3c;font-size:30px;text-align:right}
-.board .f{font-family:H;font-weight:700;font-size:30px;direction:ltr;text-align:left;background:#ffb24d;border:2px solid #17171a;padding:2px 10px;margin-top:10px}
-.board .f.t{background:#66dccb}
-.n{position:absolute;left:0;width:1200px;bottom:0;font-family:Helvetica,Arial,sans-serif !important;background:#f7c51e;color:#0a0807;font-weight:800;font-size:22px;padding:16px 64px;direction:ltr;text-align:left;font-family:C}
-</style></head><body>
-<span class="streak" style="left:-120px;top:120px;transform:rotate(-34deg)"></span>
-<span class="streak" style="right:-140px;top:470px;transform:rotate(-34deg)"></span>
-<div class="w"><span class="p">Prof</span><span class="h">Harti</span></div>
+<!doctype html><html lang="ar"><head><meta charset="utf-8"><title>OG — Prof Harti (concept)</title><style>
+@font-face{font-family:A;src:url(../node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-italic.woff2);font-style:italic;font-weight:100 900;font-stretch:62% 125%}
+@font-face{font-family:C;src:url(../node_modules/@fontsource-variable/cairo/files/cairo-arabic-wght-normal.woff2);font-weight:200 1000}
+@font-face{font-family:C;src:url(../node_modules/@fontsource-variable/cairo/files/cairo-latin-wght-normal.woff2);font-weight:200 1000;unicode-range:U+0000-00FF,U+2014}
+@font-face{font-family:S;src:url(../node_modules/@fontsource/mrs-saint-delafield/files/mrs-saint-delafield-latin-400-normal.woff2)}
+@font-face{font-family:R;src:url(../node_modules/@fontsource/aref-ruqaa/files/aref-ruqaa-arabic-700-normal.woff2);font-weight:700}
+html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+body{background:radial-gradient(48% 70% at 22% 40%,#4a1a24 0%,#2a1016 45%,#160a0d 80%);color:#f4ece1;position:relative;font-family:C}
+.sig{position:absolute;right:96px;top:66px;font:86px/1 S;color:#d9bf92;transform:rotate(-5deg)}
+.w{position:absolute;right:92px;top:150px;text-align:right;font-family:A;font-style:italic;font-weight:900;font-stretch:112%;text-transform:uppercase;line-height:.84}
+.w span{display:block;font-size:64px;color:#f4ece1} .w b{display:block;font-size:164px;color:#d9bf92;font-weight:900}
+.ar{position:absolute;right:96px;top:402px;direction:rtl;font-weight:700;font-size:40px;border-right:3px solid #a3354a;padding-right:22px;line-height:1.5}
+.ar b{color:#d9bf92;font-weight:700} .ar u{text-decoration-color:#e9b949;text-decoration-thickness:3px;text-underline-offset:14px}
+.ru{position:absolute;left:72px;top:400px;font:700 64px/1.4 R;color:#d9bf92;opacity:.9;transform:rotate(-4deg)}
+.ru small{display:block;font:600 20px/1.4 C;color:#c4b4a4;transform:rotate(4deg);margin-top:6px;opacity:.9}
+.n{position:absolute;left:0;right:0;bottom:0;height:56px;display:flex;align-items:center;gap:14px;padding:0 64px;background:#24100f;border-top:1px solid rgba(217,191,146,.3);font:600 21px C;color:#e6d9c6}
+.n i{width:9px;height:9px;border-radius:50%;background:#e9b949}
+</style>
+<div class="ru">أستاذكم الحارتي<small>الفيزياء والكيمياء · من الإعدادي حتى الباك</small></div>
 <div class="sig">Prof Harti</div>
-<div class="board"><div class="o">عرض التفوق</div><div class="f">N(t) = N₀·e<sup>−λt</sup></div><div class="f t">τ = R·C</div></div>
-<p class="ar">مع <b>أيوب حارتي</b>… <mark>ما تخافش من الفيزياء</mark></p>
-<div class="n">Concept de site — Démonstration non officielle · Mansour Technologies</div>
-</body></html>
+<div class="w"><span>Prof</span><b>Harti</b></div>
+<div class="ar">مع <b>أيوب حارتي</b>… <u>ما تخافش من الفيزياء</u></div>
+<div class="n"><i></i>Concept de site — Démonstration non officielle · Mansour Technologies</div>
