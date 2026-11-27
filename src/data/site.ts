@@ -55,12 +55,13 @@ export const inPerson = {
   announced: '20 novembre 2026',
 } as const;
 
-/** Formats observed on his official accounts (2023–2026). Archive, not a current schedule. */
+/** Formats observed on his official accounts (2023–2026; Facebook re-checked 27 Nov 2026). Archive, not a guaranteed schedule. */
 export const formats = [
+  { time: '22:00', ar: 'حصة مباشرة، الثانية باك', fr: 'Live du soir : début d’un nouveau chapitre de physique', note: 'Annonces Facebook, novembre 2026' },
   { time: '23:00', ar: 'ملخصات ليلية', fr: 'Les résumés de nuit', note: 'Story à la une Instagram · fiches publiées sur YouTube' },
   { time: '23:00', ar: 'لايف فالموجات', fr: 'Live « Les Ondes » — un samedi soir', note: 'Annonce YouTube' },
   { time: '22:00', ar: 'النووي كامل فلايف واحد', fr: 'Tout le nucléaire en un seul live — un dimanche', note: 'Annonce Instagram' },
-  { time: '23:00 → 03:00', ar: 'من العشاء الى السحور', fr: 'Live marathon du Ramadan — révision de chimie', note: 'Annonce YouTube' },
+  { time: '23:00 → 03:00', ar: 'من العشاء الى السحور · غادي تسحر و تنعس', fr: 'Live marathon de chimie, jusqu’au souhour', note: 'Annonce YouTube' },
   { time: '—', ar: 'سول و انا غادي نجاوبك', fr: 'Pose ta question, je te réponds — reels questions-réponses', note: 'Reels Instagram' },
   { time: 'BAC', ar: 'نقط باك', fr: 'Les notes du Bac de ses élèves, chaque session', note: 'Stories à la une 2019 → 2026' },
 ] as const;

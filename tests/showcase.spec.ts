@@ -137,6 +137,21 @@ test('hero poster falls back to a typographic panel when YouTube images fail, an
   await expect(hero.locator('iframe')).toHaveAttribute('src', /youtube-nocookie\.com\/embed\/bQRpHAGhIXw/);
 });
 
+test('hero photo keeps its natural colour (no duotone) and the hero is fully visible with reduced motion @mobile', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('', { waitUntil: 'networkidle' });
+  const img = page.locator('.hero [data-embed="yt"] img');
+  const look = await img.evaluate((i) => { const cs = getComputedStyle(i); return { blend: cs.mixBlendMode, filter: cs.filter, opacity: cs.opacity }; });
+  // the old yellow duotone used mix-blend-mode: luminosity; colour-replacing blends and hue/greyscale filters are not allowed
+  expect(['luminosity', 'color', 'hue', 'saturation']).not.toContain(look.blend);
+  expect(look.filter).not.toMatch(/grayscale|hue-rotate|invert/);
+  expect(look.opacity).toBe('1');
+  for (const sel of ['.hero__word', '.hero__tag', '.hero__ctas .btn']) {
+    await expect(page.locator(sel)).toBeVisible();
+    expect(await page.locator(sel).evaluate((e) => getComputedStyle(e.closest('.hero__text > *') ?? e).opacity), sel).toBe('1');
+  }
+});
+
 test('Instagram reels are official embeds loaded only on click', async ({ page }) => {
   const ig: string[] = [];
   page.on('request', (r) => { if (/instagram\.com\/p\/[^/]+\/embed/.test(r.url())) ig.push(r.url()); });
