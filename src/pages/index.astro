@@ -38,7 +38,7 @@ const portraitOnError = `this.closest('[data-portrait]').classList.add('is-fallb
     <div class="hero__grid">
       <figure class="hero__portrait" data-portrait>
         <span class="portrait__img">
-          <img src={portrait.src} alt={portrait.alt} width={portrait.width} height={portrait.height} fetchpriority="high" decoding="async" referrerpolicy="no-referrer" onerror={portraitOnError} />
+          <img src={portrait.src} alt={portrait.alt} width={portrait.width} height={portrait.height} fetchpriority="high" onerror={portraitOnError} />
         </span>
         <span class="portrait__fallback" aria-hidden="true"><span class="ruqaa">{quotes.signOff.ar}</span></span>
         <figcaption class="credit" lang="fr" dir="ltr"><a href={portrait.page} target="_blank" rel="noopener noreferrer">{portrait.credit}<span class="sr-only"> (nouvel onglet)</span></a></figcaption>
